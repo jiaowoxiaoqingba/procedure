@@ -1,0 +1,98 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css"/>
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    
+    <form action="" id="form" name="form" method="post">
+    
+    <div class="input_box">
+           <span class="bh-checkText" style="float:left;">用户名：</span>
+           <input id="username" name="username" type="text" value="{$username}" />
+    </div>
+    <div class="input_box">
+        <span class="bh-checkText" style="float:left;">真实姓名：</span>
+        <input id="truename" name="truename" type="text" value="{$truename}" />
+    </div>
+    <div class="input_box">
+           <span class="bh-checkText" style="float:left;">密码：</span>
+           <input id="pass" name="pass" type="password" value="" />
+    </div>
+    <div class="input_box">
+        <span class="bh-checkText" style="float:left;">确认密码：</span>
+        <input id="conform_pass" name="conform_pass" type="password" value="" />        
+    </div>
+    
+    <div class="input_box">
+        <span class="bh-checkText" style="float:left;">用户权限类型：</span>
+        <select id="sys_user_roleid" name="sys_user_roleid" >
+        {$option_role}
+        </select>
+    </div>
+    <div class="input_box" style="padding-left: 80px;padding-top:10px;">   
+         <input id="sysUserId" type="hidden" name="sysUserId" value="{$sysUserId}"/>
+          <input type="button" class="form_btn" value=" 提 交 " onclick="javascript:setSystemUser();"/>
+    </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    //创建或更新系统用户
+    function setSystemUser(){
+        var username = $("#username").val();
+        var truename = $("#truename").val();
+        var pass = $("#pass").val();
+        var conform_pass = $("#conform_pass").val();
+        var reg=/^[\@A-Za-z0-9\!\#\$\%\^\&\*\.\~]{6,22}$/;
+        if(username==""){
+            alert("请输入用户名");
+            return;
+        }
+        if(truename==""){
+            alert("请输入真实姓名");
+            return;
+        }
+        if(pass==""){
+            alert("请输入密码");
+            return;
+        }
+        if(!reg.test(pass)){
+            alert("密码长度6-22位,只能是字母,数字,特殊字符");
+            return;
+        }
+        if(conform_pass==""){
+            alert("请输入确认密码");
+            return;
+        }
+        if(pass!=conform_pass){
+            alert("密码不一致");
+            return;
+        }
+        
+        var sys_user_roleid = $("#sys_user_roleid").val();
+        var sysUserId=$("#sysUserId").val();
+        $.ajax({
+            type: "POST",
+            url: "/admin/manageoper/addsavemanage",
+            dataType : "json",// 指定返回类型 
+            data: {
+                username:username,
+                truename:truename,
+                pass:pass,
+                sys_user_roleid:sys_user_roleid,
+                sysUserId:sysUserId
+            },// 传递到后台的参数
+            success: function(dat){
+                if(dat.err==0){
+                    var url = "/admin/manageoper/managelist";
+                     window.location.href=url;
+                }else{
+                    alert(dat.msg);
+                }
+            },
+            error : function(){
+                //alert("error");
+            }
+        });   
+    }
+</script>
+<include file="Public/_footer" />

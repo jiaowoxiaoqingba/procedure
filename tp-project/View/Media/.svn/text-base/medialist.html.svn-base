@@ -1,0 +1,77 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css"/>
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <form action="{:U('/index.php/admin/media/medialist')}" method="post" enctype="multipart/form-data">
+        <div>
+            <span>
+                <label>选择自媒主状态:</label>
+                <select name="status">
+                    <option value="">全部</option>
+                    <option value="2" <equal name="status" value="2">selected="selected"</equal>>可用的自媒体主</option>
+                    <option value="1" <equal name="status" value="1">selected="selected"</equal>>注销的自媒体主</option>
+                </select>
+            </span>
+            <span>
+                <label>帐户名称：</label>
+                <input id="username" name="username" type="text" value="{$username}" style="width:200px;">
+            </span>
+            <span>
+                <label>手机号：</label>
+                <input id="mobile" name="mobile" type="text" value="{$mobile}" style="width:120px;ime-mode:disabled;" onkeyup='this.value=this.value.replace(/[^1-9]\D*$/,"")' ondragenter="return false" onpaste="return !clipboardData.getData('text').match(/\D/)">
+            </span>
+            <input type="submit" class="win_btn" value="搜索">
+        </div>
+    </form>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="10%">#</th>
+                <th class="line_l" width="10%">用户名</th>
+                <th class="line_l" width="10%">联系人</th>
+                <th class="line_l" width="14%">联系电话</th>  
+                <th class="line_l" width="10%">全部收入（￥）</th>  
+                <th class="line_l" width="10%">未结算（￥）</th>
+                <th class="line_l" width="13%">注册时间</th>
+                <th class="line_l" width="13%">最近登陆</th>
+                <th class="line_l" width="10%">操作</th> 
+            </tr>
+            <volist name="datalist"  id="vo" >
+                <tr overstyle='on' id="media_{$vo.id}" class="manager">            
+                    <td>{$vo.id}</td>
+                    <td><a href="javascript:func_view_userinfo({$vo.id})">{$vo.username}</a></td>      
+                    <td>{$vo.contact}</td>
+                    <td>{$vo.mobile}</td>
+                    <td>{$vo.recharge}</td>
+                    <td>{$vo.balance}</td>
+                    <td>{$vo.createtime}</td> 
+                    <td>{$vo.lastlogintime}</td>
+                    <td>
+                       <span id="oper_{$vo.id}">
+                            <eq name="vo.status" value="0">
+                                <!--a href="javascript:_destroy({$vo.id});">删除</a-->
+                            <else/>
+                                -----
+                            </eq>
+                        </span>
+                    </td>
+                </tr>
+            </volist>
+            <tr overstyle='on' id="" class="manager">            
+                    <td colspan="9">
+                    余额：   <if condition="$total['balance_total']">{$total['balance_total']}<else/>/</if>
+                    总金额： <if condition="$total['recharge_total']">{$total['recharge_total']}<else/>/</if>
+                    已提金额：<if condition="$total['available_total']">{$total['available_total']}<else/>/</if>
+                    </td>
+                </tr>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<!--删除系统用户二次确认框-->
+<div class="windows_box win_510" id="view_task" ></div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/media.js" ></script>
+<include file="Public/_footer" />

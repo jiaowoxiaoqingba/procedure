@@ -1,0 +1,17 @@
+<div class="tab_menu">
+    <ul>
+        <a href="__CONTROLLER__/waitaudit/status/waitaudit">
+           <li>
+           <if condition="$tmp eq 'waitaudit' ">
+                <span class="blue">微博帐号待审核列表</span>
+           <else/>　
+                <span>微博帐号待审核列表</span>
+           </if>
+           ｜</li>
+        </a>
+        <a href="__CONTROLLER__/waitaudit/status/editaudit"><li><if condition="$tmp eq 'editaudit' "><span class="blue">微博帐号修改审核列表</span><else/><span>微博帐号修改审核列表</span></if>｜</li>
+        </a>
+        <a href="__CONTROLLER__/waitaudit/status/refuseaudit"><li>　<if condition="$tmp eq 'refuseaudit' "><span class="blue">微博帐号已拒绝列表</span><else/><span>微博帐号已拒绝列表</span>　</if>｜</li></a>
+        <a href="__CONTROLLER__/waitaudit/status/successaudit"><li>　<if condition="$tmp eq 'successaudit' "><span class="blue">微博帐号已审核列表</span><else/><span>微博帐号已审核列表</span>　</if>｜</li></a>
+    </ul>
+</div>

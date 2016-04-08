@@ -1,0 +1,54 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<style type="text/css">
+	#tab_mod{
+		width:220px;height:80px;border:1px solid #ddd;position:absolute;left:350px;top:100px;z-index:20px;background:#32DC32;display:none;
+	}
+	.closebtn{
+		width:15px;height:15px;border:1px solid #ddd; text-align:center;float:right;
+	}
+</style>
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <div style="height:40px;line-height:30px;">
+    <form action="{:U('/index.php/admin/finance/managerrecharge')}" method="post" enctype="multipart/form-data">
+        <label>输入要搜索的账户：</label> 
+        <input type="text" name="user_name" class="user_name" placeholder="输入要搜索的账户" value="{$username}"/>
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>
+    </div>
+    <notempty name="platform_user_list">
+        <label>搜索结果：</label>
+        <div class="list">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr> 
+                    <th class="line_l" width="5%">编号</th>  
+                    <th class="line_l" width="10%">用户名</th>
+                    <th class="line_l" width="10%">身份</th>
+                    <th class="line_l" width="10%">类型</th>
+                    <th class="line_l" width="10%">联系人</th>
+                    <th class="line_l" width="10%">手机</th>
+                    <th class="line_l" width="10%">邮箱</th>
+                    <th class="line_l" width="15%">QQ/微信</th>
+                    <th class="line_l" width="10%">状态</th>
+                    <th class="line_l" width="10%">操作</th>  
+                </tr>
+                <foreach name="platform_user_list" item="user">
+                <tr>
+                    <td>{$user['id']}</td>
+                    <td>{$user['username']}</td>
+                    <td>{$user['typename']}</td>
+                    <td>{$user['usertypename']}</td>
+                    <td>{$user['contact']}</td>
+                    <td>{$user['mobile']}</td>
+                    <td>{$user['email']}</td>
+                    <td>{$user['qq']} / {$user['wechat']}</td>
+                    <td>{$user['statusname']}</td>
+                    <td><a href="{:U('/index.php/admin/finance/rechargeamount/id/'.$user['id'])}"><span class="win_btn">充值</span></a></td>
+                </tr>
+                </foreach>
+            </table>
+        </div>
+    </notempty>  
+</div>
+<include file="Public/_footer" />

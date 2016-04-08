@@ -1,0 +1,185 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.datetimepicker.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery-ui-1.7.2.custom.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <div style="height:70px;line-height:30px;">
+    <form action="{:U('/index.php/admin/order/wechatorder')}" method="post" enctype="multipart/form-data">
+        <label>创建日期：</label> 
+        <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+        <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+        <label>任务创建人昵称：</label>
+        <input type="text"  maxlength="200" name="user_name" value="{$user_name}" placeholder="任务创建人昵称"/>
+        <label>平台订单ID：</label>
+        <input type="text" name="tid" value="{$tid}"  placeholder="任务ID"/>
+        <br/>
+        <lable>订单状态：</lable>
+        <select name="status">
+        		<option  value="">-请选择-</option>
+        		<option  value="0" {$status == '0' ? 'selected' : ''} >未派单</option>
+        		<option  value="1" {$status == '1' ? 'selected' : ''} >派单</option>
+        		<option  value="2" {$status == '2' ? 'selected' : ''} >接单</option>
+        		<option  value="3" {$status == '3' ? 'selected' : ''} >已发布</option>
+        		<option  value="4" {$status == '4' ? 'selected' : ''} >已完成</option>
+        		<option  value="5" {$status == '5' ? 'selected' : ''} >取消</option>
+        		<option  value="6" {$status == '6' ? 'selected' : ''} >失败</option>
+                <option  value="7" {$status == '7' ? 'selected' : ''} >拒单</option>
+                <option  value="8" {$status == '8' ? 'selected' : ''} >流单</option>
+                <option  value="9" {$status == '9' ? 'selected' : ''} >订单中途停止</option>
+        		<option  value="10" {$status == '10' ? 'selected' : ''} >接单后流单</option>
+                <option  value="11" {$status == '11' ? 'selected' : ''} >未按要求上传完成图片</option>
+        </select>
+        <label>任务名称：</lable>
+        <input type="text" id="content" maxlength="200" name="content" value="{$content}" placeholder="任务名称"/>
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>
+    </div>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="5%">订单ID</th>
+                <th class="line_l" width="10%">接单人</th>
+                <th class="line_l" width="10%">任务名称</th>
+                <th class="line_l" width="10%">微信标题</th>  
+                <th class="line_l" width="10%">任务创建人</th>
+                <th class="line_l" width="10%">创建时间</th>
+                <th class="line_l" width="10%">开始时间</th>  
+                <th class="line_l" width="10%">订单价格</th>  
+                <th class="line_l" width="15%">订单状态</th>
+                <th class="line_l" width="10%">操作</th>
+            </tr>
+            <foreach name="orders" item="order">
+	        <tr>
+		        <td>{$order['id']}</td>
+                <td><a href="javascript:;" onclick="mediauser_info({$order['payeeid']});">{$order['user_name']}</a></td>
+                <td><a href="javascript:;" onclick="taskinfo({$order['taskid']},{$order['id']});">{$order['taskname']}</a></td>
+                <td>{$order['wxtitle']}</td>
+                <td>{$order['username']}</td>
+                <td>{$order['createtime']}</td>
+                <td>{$order['starttime']}</td>
+                <td>{$order['realadprice']}</td>
+                <td>{$statuslist[$order['status']]}
+                   <if condition="$order['appealsign'] eq 1">　　
+                        <if condition="$order['appeal'] eq 0">
+                        <a href="javascript:;" onclick="appealed({$order['id']},0)">申诉</a>
+                        <elseif condition="$order['appeal'] eq 1" />
+                        <a href="javascript:;" onclick="appealed({$order['id']},1)">申诉中</a>
+                        <else />
+                        <span style="color:#ddd;">申诉已完成</span>
+                        </if>
+                   </if>
+                </td>
+                <td><if condition="$order['updatetime'] eq 1"><a href="javascript:;" onclick="javascript:UpdateTime({$order['id']});">修改时间</a><else />----</if></td>
+	        </tr>
+            </foreach>
+            <tr>
+                 <td class="line_l" width="5%">&nbsp;</td>
+                 <td class="line_l" width="10%">&nbsp;</td>
+                 <td class="line_l" width="10%">&nbsp;</td>
+                 <td class="line_l" width="10%">&nbsp;</td>  
+                 <td class="line_l" width="10%">&nbsp;</td>  
+                 <td class="line_l" width="10%">&nbsp;</td>  
+                 <td class="line_l" width="10%">订单总计:{$num_total}</td>  
+                 <td class="line_l" width="10%">总计:{$balance_total}</td>  
+                 <td class="line_l" width="15%">&nbsp;</td>  
+                 <td class="line_l" width="10%">&nbsp;</td>  
+            </tr>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-ui-1.7.2.custom.min.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.datetimepicker.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/admin/js/taskorders.js" ></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#starttime,#endtime').datetimepicker({
+        lang:'ch',
+        timepicker:true,
+        format:'Y-m-d H:i',
+        formatDate:'Y-m-d H:i'
+    });
+});
+
+function rejectOrder(orderId,appealsign){
+    //updateTaskStatus(taskId,5);
+    var appeal = $("#appeal_selected").val();
+    var rejectDesc = $("#rejectDesc").val();
+    var adappealprice = $("#adappealprice").val();
+    var mappealprice = $("#mappealprice").val();
+    //alert(appeal);
+    $.ajax({
+        type: "POST",
+        url: "/admin/order/appealed_reason",
+        dataType : "json",// 指定返回类型 
+        data: {
+            id:orderId,appealsign:appealsign,rejectDesc:rejectDesc,adappealprice:adappealprice,mappealprice:mappealprice,appeal:appeal
+        },// 传递到后台的参数
+        success: function(data){
+            if(data.err == 0){
+                alert(data.msg);
+                $("#audit_refuse").hide();
+                window.location.reload();
+            }else{
+                alert(data.msg);
+            }
+        }
+    });
+}
+
+//弹出任务申诉浮层
+function appealed(orderId,appealsign){
+    var _js = "javascript:rejectOrder("+orderId+","+appealsign+");"
+    $("#audit_refuse_a").attr("href",_js);
+    $("#audit_refuse").show();
+    
+    $(".close_btn").click(function(){
+        $('#audit_refuse').hide();
+    });
+}
+
+//申诉状态的改变
+$("#appeal_selected").live("change",function(){
+    var selected = $(this).val();
+    if(selected == 1){
+        $("#appeal_reason").css("display","block");
+        $("#appeal_price").css("display","none");
+    }else{
+        $("#appeal_reason").css("display","none");
+        $("#appeal_price").css("display","block");
+    }
+});
+</script>
+<div class="windows_box win_510" id="view_task" ></div>
+<!--申诉-->
+<div class="windows_box win_510" id="audit_refuse">
+    <div class="win_title">
+        <span class="win_name">申诉</span>
+      <a href="javascript:void(0)" rel="777" class="close_btn"></a>
+    </div>
+    <div class="win_con" style="margin:10px;">
+    <lable>申诉状态：</lable>
+    <select name="appeal" id="appeal_selected">
+        <option value="1">申诉中</option>
+        <option value="2">申诉完成</option>
+    </select>
+    </div>
+    <div class="win_con" id="appeal_reason" style="display:block;">
+        <div class="textarea">
+            <textarea id="rejectDesc" name="rejectDesc" onfocus="$(this).html('')">请填写申诉理由，简明扼要</textarea>
+        </div>
+    </div>
+    <div class="win_con" id="appeal_price" style="display:none;">
+        <lable>广告主结算价格  :</lable>
+        <input type="text" name="adappealprice" id="adappealprice" />　元
+        <br/><br/>
+        <lable>自媒体主结算价格:</lable>
+        <input type="text" name="mappealprice" id="mappealprice" />　元
+    </div>
+    <div class="btn_area" style="margin:10px;"><a id="audit_refuse_a" href="javascript:rejectOrder();" class="win_btn"><span>提交</span></a></div>
+</div>
+<include file="Public/_footer" />

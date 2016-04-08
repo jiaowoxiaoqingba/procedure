@@ -1,0 +1,117 @@
+<include file="Public/_header" />
+<style type="text/css">
+    #tab_refuse{
+    width:450px;height:200px;border:1px solid #ddd;position:absolute;left:350px;top:100px;z-index:20px;background:pink;display:none;
+    }
+    .refuse_reason{
+    font-weight:bold;font-size:14px;text-align:left;
+    }
+    .refuse_close{
+    width:15px;height:15px;border:1px solid #ddd; text-align:center;float:right;margin:10px;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="5%">任务id</th>
+                <th class="line_l" width="25%">任务名称</th>
+                <th class="line_l" width="5%">任务类型</th>
+                <th class="line_l" width="9%">平台类型</th>
+                <th class="line_l" width="5%">派单数</th>  
+                <th class="line_l" width="10%">预计金额</th>  
+                <th class="line_l" width="13%">创建时间</th>
+                <th class="line_l" width="13%">开始时间</th>   
+                <th class="line_l" width="15%">操作</th>  
+            </tr>
+            <foreach name="tasks" item="task">
+            	<tr>
+            		<td>{$task['id']}</td>
+            		<td><a href="javascript:;" onclick="javascript:taskinfo({$task['id']});">{$task['taskname']}</a></td>
+            		<td>{$task['type']}</td>
+            		<td>{$task['plattype']}</td>
+            		<td><a href="__CONTROLLER__/taskorders/id/{$task['id']}">{$task['orderrows']}</a></td>
+            		<td>{$task['total_price']}</td>
+            		<td>{$task['createtime']}</td>
+                    <td>{$task['starttime']}</td>
+            		<td><a href="javascript:;" onclick="javascript:updateTaskStatus({$task['id']},2)">通过</a>　|　<a href="javascript:;" onclick="javascript:viewRejectTask({$task['id']})">拒绝</a></td>
+            	</tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".close_btn").click(function(){
+        $("#audit_refuse").hide();
+    });
+});
+function updateTaskStatus(taskId,updateStatus){
+    var rejectDesc = $("#rejectDesc").val();
+    $.ajax({
+        type: "POST",
+        url: "/admin/task/taskpass.html",
+        //dataType : "json",// 指定返回类型 
+        data: {
+            act:'updateTaskStatus',
+            taskId:taskId,
+            updateStatus:updateStatus,
+            rejectDesc:rejectDesc
+        },// 传递到后台的参数
+        success: function(data) {  
+            if(data=="success"){
+                var url = getUrl();
+                window.location.reload();
+            }else if(data=="Handle"){
+                alert("任务已处理");                         
+            }else{
+                alert("错误："+data);
+            }
+        },
+        error : function(){
+            alert("error");
+        }
+    });
+}
+function getUrl(){
+    var currentPage = $("a[class='active']").text();
+    currentPage = currentPage.replace(/[^0-9]/ig,""); 
+    var url = "/admin/task/unchecklist/p/"+currentPage+".html";
+    
+    return url;
+}
+
+function rejectTask(taskId){
+    updateTaskStatus(taskId,3);
+    $("#audit_refuse").hide();
+}
+
+//弹出任务拒绝浮层
+function viewRejectTask(taskId){
+    var _js = "javascript:rejectTask("+taskId+");"
+    $("#audit_refuse_a").attr("href",_js);
+    $("#audit_refuse").show();
+}
+</script>
+<div class="windows_box win_510" id="view_task" ></div>
+<!--审核拒绝-->
+<div class="windows_box win_510" id="audit_refuse">
+    <div class="win_title">
+        <span class="win_name">拒绝原因</span>
+      <a href="javascript:void(0)" rel="777" class="close_btn"></a>
+    </div>
+    <div class="win_con">
+        <div class="textarea">
+            <textarea id="rejectDesc" name="rejectDesc" onfocus="$(this).html('')">请帮助企业提出修改建议，简明扼要</textarea>
+        </div>
+        <div class="btn_area"><a id="audit_refuse_a" href="javascript:rejectTask();" class="win_btn"><span>提交</span></a></div>
+    </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/tasks.js" ></script>
+<include file="Public/_footer" />

@@ -1,0 +1,55 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <div>  
+    <form action="{:U('/index.php/admin/agent/agentaudit')}" method="post" enctype="multipart/form-data">
+        <label>广告主名称：</label>
+        <input type="text" name="advername" value="{$advername}" placeholder="广告主名称" />
+        &nbsp;&nbsp;
+        <label>代理商用户名：</label>
+        <input type="text" name="agentname" value="{$agentname}" placeholder="代理商用户名" />
+        &nbsp;&nbsp;
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>
+    </div>  
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="25%">广告主名称</th>
+                <th class="line_l" width="25%">代理商用户名</th>
+                <th class="line_l" width="25%">创建时间</th>
+                <th class="line_l" width="25%">操作</th>  
+            </tr>
+            <foreach name="data" item="vo">
+            <tr>
+                <td><a href="javascript:;" name="a_view" ajax-url="/admin/agent/adverinfoview.html" ajax-data="id={$vo['id']}&invite=1">{$vo['advername']}</a></td>
+                <td>{$vo['agentusername']}</td>
+                <td>{$vo['createtime']}</td>
+                <td><if condition="$vo['status'] eq 0"><a href="javascript:;" id="a_check_ok" ajax-url="/admin/agent/checkAdver.html" ajax-data="id={$vo['id']}&status=1">通过</a> | <a href="javascript:;" id="a_check_no" ajax-data="{$vo['id']}">拒绝</a><else />已拒绝（{$vo['reason']}）</if></td>
+            </tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<div class="windows_box win_510" id="view_user" ></div>
+<!--审核拒绝-->
+<div class="windows_box win_510" id="adver_refuse">
+    <div class="win_title">
+        <span class="win_name">广告主审核</span>
+      <a href="javascript:void(0)" rel="777" class="close_btn"></a>
+    </div>
+    <div class="win_con">
+        <div class="textarea">
+            <textarea name="rejectDesc" onfocus="$(this).html('')">请输入拒绝理由</textarea>
+            <input type="hidden" name="id" value="" />
+        </div>
+        <div class="btn_area"><a id="submit" href="javascript:;" class="win_btn"><span>提交</span></a></div>
+    </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/adverapply.js" ></script>
+<include file="Public/_footer" />

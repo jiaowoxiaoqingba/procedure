@@ -1,0 +1,62 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <form action="{:U('/index.php/admin/material/photolist')}" method="post" enctype="multipart/form-data">
+        广告主昵称：<input type="text" size="10" maxlength="200" name="u_name" value="{$u_name}"/>
+        &nbsp;&nbsp;
+        可用状态：
+        <select name="isuse">
+            <option value=''>-请选择状态-</option>
+            <option value="0" {$isuse === '0' ? 'selected' : ''} >可用</option>
+            <option value="1" {$isuse == '1' ? 'selected' : ''} >不可用</option>
+        </select>
+        &nbsp;&nbsp;
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="10%">序号ID</th>
+                <th class="line_l" width="25%">图片</th>
+                <th class="line_l" width="15%">广告主昵称</th>
+                <th class="line_l" width="15%">图片分组</th>
+                <th class="line_l" width="20%">创建时间</th>  
+                <th class="line_l" width="15%">可用状态</th>
+            </tr>
+            <foreach name="pics" item="pic">
+		<tr>
+			<td>{$pic['id']}</td>
+			<td><a href="__CONTROLLER__/picinfo/id/{$pic['id']}"><img src="{$pic['pic']}" style="height:50px;"/></a></td>
+			<td>{$pic['username']}</td>
+			<td>{$pic['type']}</td>
+			<td>{$pic['createtime']}</td>
+			<td><a href="javascript:;" onclick="javascript:picstate({$pic['id']},{$pic['isuse']});">{$isuselist[$pic['isuse']]}</a></td>
+		</tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<script type="text/javascript">
+	function picstate(picid,visuse){
+		$.ajax({
+			url:"__CONTROLLER__/pic_update",
+			data:{id:picid,isuse:visuse},
+			dataType:"json",
+			type:"POST",
+			success:function(data){
+				if(data.err == 0){
+					alert("可用状态修改成功！");
+					window.location.reload();
+				}else{
+					alert("可用状态修改失败！");
+				}
+			}
+		});
+	}
+</script>
+<include file="Public/_footer" />

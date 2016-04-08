@@ -1,0 +1,17 @@
+<include file="Public/_header" />
+<a href="javascript:;" onclick="window.history.go(-1)">返回上一级</a>
+<if condition="$sign eq 1">
+<form action="{:U('/index.php/admin/material/update')}" method="post" enctype="multipart/form-data">
+<input type="hidden" name="id" value="{$picinfo['id']}" />
+<div><img src="{$picinfo['pic']}" width="200" /></div>
+<br/><br/>
+<div>可用状态:
+<input type="radio" name="isuse" value="0" {$picinfo['isuse'] === '0' ? 'checked' : ''} />可用
+<input type="radio" name="isuse" value="1" {$picinfo['isuse'] == '1' ? 'checked' : ''}   />不可用
+</div>
+<input type="submit" value="修改" />
+</form>
+<else />
+没有图片
+</if>
+<include file="Public/_footer" />

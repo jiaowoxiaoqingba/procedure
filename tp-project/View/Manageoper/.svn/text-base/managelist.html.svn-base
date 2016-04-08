@@ -1,0 +1,88 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css"/>
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <form action="{:U('/index.php/admin/manageoper/managelist')}" method="post" enctype="multipart/form-data">
+        用户类型：
+        <select id="search_roleid" name="search_roleid">
+        {$rolehtml}
+        </select>
+        &nbsp;&nbsp;
+        用户名：<input type="text" id="content" maxlength="200" name="content" value="{$content}"/>
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="5%">序号</th>
+                <th class="line_l" width="15%">用户名</th>
+                <th class="line_l" width="15%">用户类型</th>
+                <th class="line_l" width="15%">真实姓名</th>
+                <th class="line_l" width="15%">创建时间</th>  
+                <th class="line_l" width="15%">最后登录时间</th>  
+                <th class="line_l" width="15%">操作</th>  
+            </tr>
+            <volist name="datalist"  id="vo" >
+                <tr overstyle='on' id="manager_{$vo.id}" class="manager">            
+                    <td>{$vo.id}</td>
+                    <td>{$vo.username}</td>
+                    <td>{$vo.rolename}</td>       
+                    <td>{$vo.truename}</td>
+                    <td>{$vo.createtime}</td>
+                    <td>{$vo.lastlogintime}</td>
+                    <td>
+                        <span id="oper_{$vo.id}">
+                            <a href="/index.php/admin/manageoper/addmanage/id/{$vo.id}">修改</a> 
+                            <a href="javascript:viewDeleteSysUser({$vo.id});">删除</a>
+                        </span>
+                    </td>
+                </tr>
+            </volist>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<!--删除系统用户二次确认框-->
+<div class="windows_box win_270" id="viewDeleteSysUser">
+    <div class="win_con">
+        <div id="view_deleteSysUser_title" class="win_alert">确定删除该用户?</div>
+        <div class="btn_area"><a id="view_deleteSysUser_a" href="javascript:void(0)" class="win_btn"><span>确定</span></a><a href="javascript:closelayer();" class="win_btn" rel="777"><span>取消</span></a></div>
+    </div>
+</div>
+<script>
+    //弹出确认框
+    function viewDeleteSysUser(managerid){    
+        var _js = "javascript:delmanager("+managerid+");";
+        $("#view_deleteSysUser_a").attr("href",_js);
+        $("#viewDeleteSysUser").show();
+    }
+    //删除用户
+    function delmanager(managerid) {
+        $.ajax({
+            type : "POST",
+            url : "/admin/manageoper/deletemanage",
+            data : "managerid=" + managerid,
+            dataType: "json",
+            beforeSend : function() {
+                $("#viewDeleteSysUser").hide();
+                $("#oper_"+managerid).html("删除中，请稍候......");
+            },
+            success : function(dat) {
+                $("#viewDeleteSysUser").hide();
+                if (dat.err == 0) {
+                    $("#oper_"+managerid).html("删除成功！");
+                } else {
+                    alert("删除失败！");
+                }
+            }
+        });
+    }
+    //关闭层
+    function closelayer(){
+        $("#viewDeleteSysUser").hide();
+    }
+</script>
+<include file="Public/_footer" />

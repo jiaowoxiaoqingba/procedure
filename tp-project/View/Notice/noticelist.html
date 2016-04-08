@@ -1,0 +1,177 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<style type="text/css">
+    .right{
+        border:1px solid #7093DB;cursor:pointer;background:#7093DB;color:#fff;text-align: center;align:right;display: block;line-height: 40px;width:100px;height:40px;font-size: 16px;margin-top: -15px;
+    }
+    .workwrap{word-wrap: break-word; word-break: break-all;}
+</style>
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <form action="{:U('/index.php/admin/notice/noticelist')}" method="post" enctype="multipart/form-data">
+        <if condition="$type eq ''">
+        <label>公告类型：<label>
+        <select name="type" id="selecttype">
+                <option  value="">-请选择-</option>
+                <option  value="1" {$type == '1' ? 'selected' : ''} >系统消息</option>
+                <option  value="2" {$type == '2' ? 'selected' : ''} >广告用户消息</option>
+                <option  value="4" {$type == '4' ? 'selected' : ''} >自媒体主用户消息</option>
+        </select>
+        &nbsp;&nbsp;
+        <label id="needone" style="display:none">用户类型：
+        <select name='acceptuser_one'>
+        <option value='1' {$acceptuser_one == '1' ? 'selected' : ''} >独立广告主</option>
+        <option value='2' {$acceptuser_one == '2' ? 'selected' : ''} >代理商</option>
+        <option value='3' {$acceptuser_one == '3' ? 'selected' : ''} >代理商的广告主</option>
+        <option value='4' {$acceptuser_one == '4' ? 'selected' : ''} >自媒体主</option>
+        </select>
+        </label>
+        <label id="needtwo" style="display:none">
+        接收用户名：
+        <input type="text" name="acceptuser_two" value="{$acceptuser_two}" />
+        </label>
+        &nbsp;&nbsp;
+        <elseif condition="$type eq 1"/>
+        <label>公告类型：<label>
+        <select name="type" id="selecttype">
+                <option  value="">-请选择-</option>
+                <option  value="1" {$type == '1' ? 'selected' : ''} >系统消息</option>
+                <option  value="2" {$type == '2' ? 'selected' : ''} >广告用户消息</option>
+                <option  value="4" {$type == '4' ? 'selected' : ''} >自媒体主用户消息</option>
+        </select>
+        &nbsp;&nbsp;
+        <label id="needone">用户类型：
+        <select name='acceptuser_one'>
+        <option value='1' {$acceptuser_one == '1' ? 'selected' : ''} >独立广告主</option>
+        <option value='2' {$acceptuser_one == '2' ? 'selected' : ''} >代理商</option>
+        <option value='3' {$acceptuser_one == '3' ? 'selected' : ''} >代理商的广告主</option>
+        <option value='4' {$acceptuser_one == '4' ? 'selected' : ''} >自媒体主</option>
+        </select>
+        </label>
+        <label id="needtwo" style="display:none">
+        接收用户名：
+        <input type="text" name="acceptuser_two" value="{$acceptuser_two}" />
+        </label>
+        &nbsp;&nbsp;
+        <else />
+        <label>公告类型：<label>
+        <select name="type" id="selecttype">
+                <option  value="">-请选择-</option>
+                <option  value="1" {$type == '1' ? 'selected' : ''} >系统消息</option>
+                <option  value="2" {$type == '2' ? 'selected' : ''} >广告用户消息</option>
+                <option  value="4" {$type == '4' ? 'selected' : ''} >自媒体主用户消息</option>
+        </select>
+        &nbsp;&nbsp;
+        <label id="needone" style="display:none">用户类型：
+        <select name='acceptuser_one'>
+        <option value='1' {$acceptuser_one == '1' ? 'selected' : ''} >独立广告主</option>
+        <option value='2' {$acceptuser_one == '2' ? 'selected' : ''} >代理商</option>
+        <option value='3' {$acceptuser_one == '3' ? 'selected' : ''} >代理商的广告主</option>
+        <option value='4' {$acceptuser_one == '4' ? 'selected' : ''} >自媒体主</option>
+        </select>
+        </label>
+        <label id="needtwo">
+        接收用户名：
+        <input type="text" name="acceptuser_two" value="{$acceptuser_two}" />
+        </label>
+        &nbsp;&nbsp;
+        </if>
+        <input id="baocun-btn" type="submit" value="搜索">
+        <a href="__CONTROLLER__/noticeadd"><span class="right">+ 添加公告</span></a>
+    </form>    
+            <div class="list">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>   
+                        <th class="line_l" width="10%"><a href="javascript:;" onclick="checkall()">全选</a>/<a href="javascript:;" onclick="checkno()">全不选</a></th>
+                        <th class="line_l" width="10%">序号</th>
+                        <th class="line_l" width="15%">公告类型</th>
+                        <th class="line_l" width="15%">接收用户编号</th>
+                        <th class="line_l" width="15%">公告标题</th>
+                        <th class="line_l" width="15%">创建时间</th>
+                        <th class="line_l" width="10%">创建人</th>
+                        <th class="line_l" width="10%">操作</th>
+                    </tr>
+                    <foreach name="notices" item="notice">
+                    <tr>
+                        <td><input type="checkbox" name="checked" value="{$notice['id']}" class="checkedbox" /></td>
+                        <td>{$notice['id']}</td>
+                        <td>{$typelist[$notice['type']]}</td>
+                        <if condition="$notice['type'] eq 0">
+                        <td>{$notice['acceptuser']}</td>
+                        <elseif condition="$notice['type'] eq 1" />
+                        <td>{$acceptuserlist[$notice['acceptuser']]}</td>
+                        <else />
+                        <td>{$notice['username']}</td>
+                        </if>
+                        <td><a href="javascript:;" onclick="javascript:noticeinfo({$notice['id']});">{$notice['noticename']}</a></td>
+                        <td>{$notice['createtime']}</td>
+                        <td>{$notice['user_name']}</td>
+                        <td><a href="javascript:;" onclick="javascript:noticedel({$notice['id']})">删除</a></td>
+                    </tr>
+                    </foreach>
+                    <tr>
+                        <td class="line_l" width="10%"><a href="javascript:;" onclick="allnoticedel()">全部删除</a></td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                    </tr>
+                </table>
+            </div>
+            <div class="Toolbar_inbox">
+                <div class="yema">{$pagehtml}</div>  
+            </div>
+        </div>
+<div class="windows_box win_510" id="view_task" ></div>
+<script type="text/javascript">
+//公告的删除
+function noticedel(nid){
+    $.ajax({
+        url:"__CONTROLLER__/noticedel",
+        data:{nid:nid},
+        dataType:"json",
+        type:"POST",
+        success:function(dat){
+            if(dat.err == 0) {
+                alert(dat.msg);
+                window.location.reload();
+            }else {
+                alert(dat.msg);
+            }
+        }
+    });
+}
+
+//公告的全选删除
+function allnoticedel(){
+        var id = '';
+        $("input:checkbox[name=checked]:checked").each(function(){
+            id += $(this).val()+",";
+        });
+        if(id == ''){
+            alert('请先选择！');
+        }else{
+            $.ajax({
+                url:"__CONTROLLER__/noticedel",
+                dataType:"json",
+                data:{nid:id},
+                type:"POST",
+                success:function(dat){
+                    if(dat.err == 0){
+                        alert(dat.msg);
+                        window.location.reload();
+                    }else{
+                        alert(dat.msg);
+                    }
+                }
+            });
+        }   
+}
+
+</script>
+<script type="text/javascript" src="__PUBLIC__/admin/js/notice.js" ></script>
+<include file="../Public/_footer" />

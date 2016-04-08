@@ -1,0 +1,70 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<style type="text/css">
+    .right{
+        border:1px solid #7093DB;cursor:pointer;background:#7093DB;color:#fff;text-align: center;align:right;display: block;line-height: 40px;width:100px;height:40px;font-size: 16px;margin-top: -15px;
+    }
+</style>
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <form action="{:U('/index.php/admin/role/funclist')}" method="post" enctype="multipart/form-data">
+        功能信息：
+        <input type="text"  maxlength="200" name="description" value="{$description}"/>
+        &nbsp;&nbsp;
+        功能状态：
+        <select name="sign">
+        		<option  value="">-请选择-</option>
+        		<option  value="0" {$sign === '0' ? 'selected' : ''} >旧功能</option>
+        		<option  value="1" {$sign == '1' ? 'selected' : ''} >新功能</option>
+        </select>
+        &nbsp;&nbsp;
+        <input id="baocun-btn" type="submit" value="搜索">
+        <a href="__CONTROLLER__/funcadd"><span class="right">+ 添加功能</span></a>
+    </form>
+    <div ></div> 
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="15%">功能ID</th>
+                <th class="line_l" width="20%">功能文件</th>
+                <th class="line_l" width="15%">功能父ID</th>
+                <th class="line_l" width="20%">功能描述</th>
+                <th class="line_l" width="10%">功能状态</th>
+                <th class="line_l" width="20%">操作</th>
+            </tr>
+            <foreach name="sysfuncs" item="sysfunc">
+	   <tr>
+	       <td>{$sysfunc['id']}</td>
+                  <td>{$sysfunc['func']}</td>
+                  <td>{$sysfunc['pid']}</td>
+                  <td>{$sysfunc['descript']}</td>
+                  <td>{$sysfunc['sign']}</td>
+                  <td><!--a href="__CONTROLLER__/funcadd/id/{$sysfunc['id']}">添加子功能</a-->　<a href="__CONTROLLER__/funcmod/id/{$sysfunc['id']}">修改</a>　<a href="javascript:;" onclick="javascript:funcdel({$sysfunc['id']})">删除</a></td>
+	   </tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<script type="text/javascript">
+    function funcdel(fid){
+        $.ajax({
+            url:"/admin/role/funcdel",
+            data:{id:fid},
+            dataType:"json",
+            type:"POST",
+            success:function(data){
+                if(data.err == 0){
+                    alert(data.msg);
+                    window.location.reload();
+                }else{
+                    alert(data.msg);
+                }
+            }
+        });
+    }
+</script>
+<include file="Public/_footer" />

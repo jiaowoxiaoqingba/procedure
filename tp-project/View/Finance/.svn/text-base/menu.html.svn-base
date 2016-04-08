@@ -1,0 +1,10 @@
+<div class="tab_menu">
+    <ul>
+        <a href="__CONTROLLER__/withdrawals/tmp/wait"><li>　<span <if condition="$tmp eq 'wait'"> class="blue" </if>>待审核</span>　｜</li></a>
+        <a href="__CONTROLLER__/withdrawals/tmp/pass"><li>　<span <if condition="$tmp eq 'pass'"> class="blue" </if>>已通过</span>　｜</li></a>
+        <a href="__CONTROLLER__/withdrawals/tmp/refuse"><li>　<span <if condition="$tmp eq 'refuse'"> class="blue" </if>>已拒绝</span>　｜</li></a>
+        <a href="__CONTROLLER__/withdrawals/tmp/finish"><li>　<span <if condition="$tmp eq 'finish'"> class="blue" </if>>已提现</span>　｜</li></a>
+        <a href="__CONTROLLER__/withdrawals/tmp/pay"><li>　<span <if condition="$tmp eq 'pay'"> class="blue" </if>>待支付</span>　｜</li></a>
+        <a href="__CONTROLLER__/withdrawals/tmp/fail"><li>　<span <if condition="$tmp eq 'fail'"> class="blue" </if>>支付失败</span>　</li></a>
+    </ul>
+</div>

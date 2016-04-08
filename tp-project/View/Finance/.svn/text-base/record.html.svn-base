@@ -1,0 +1,101 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.datetimepicker.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery-ui-1.7.2.custom.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <div style="height:70px;line-height:30px;">  
+    <form action="{:U('/index.php/admin/finance/record')}" method="post" enctype="multipart/form-data">
+        <label>充值日期：</label> 
+        <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+        <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+        <br/>
+        <select name="agt_priv">
+            <option value="">选择身份</option>
+            <option value="0" {$agt_priv == '0' ? 'selected' : ''}>独立广告主</option>
+            <option value="1" {$agt_priv == '1' ? 'selected' : ''}>代理商</option>
+            <option value="2" {$agt_priv == '2' ? 'selected' : ''}>代理商的广告主</option>
+        </select>
+        <select id="operate_type" name="operate_type" >
+            <option value="">全部类型</option>
+            <option value="0" {$operate_type == '0' ? 'selected' : ''}>前台充值</option>
+            <option value="1" {$operate_type == '1' ? 'selected' : ''}>后台充值</option>
+        </select>
+        <select name="status">
+        		<option  value="">充值状态</option>
+        		<option  value="0" {$status == '0' ? 'selected' : ''} >开始充值</option>
+        		<option  value="1" {$status == '1' ? 'selected' : ''} >开始调用接口</option>
+        		<option  value="2" {$status == '2' ? 'selected' : ''} >充值成功</option>
+        		<option  value="3" {$status == '3' ? 'selected' : ''} >调用接口充值失败</option>
+        		<option  value="4" {$status == '4' ? 'selected' : ''} >账号加钱失败</option>
+        		<option  value="5" {$status == '5' ? 'selected' : ''} >账号加钱成功</option>
+        </select>
+        &nbsp;&nbsp;
+        <label>WeiQ用户名：</label>
+        <input type="text" name="uname" value="{$uname}" />
+        &nbsp;&nbsp;
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>
+    </div>  
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="10%">WeiQ用户名</th>
+                <th class="line_l" width="10%">身份</th>
+                <th class="line_l" width="5%">联系人</th>
+                <th class="line_l" width="10%">充值平台</th>
+                <th class="line_l" width="15%">流水号</th>
+                <th class="line_l" width="10%">充值额度(元)</th>  
+                <th class="line_l" width="15%">充值时间</th>  
+                <th class="line_l" width="8%">充值状态</th>  
+                <th class="line_l" width="14%">充值类型</th>  
+                <th class="line_l" width="8%">操作员</th>  
+            </tr>
+            <foreach name="records" item="record">
+			<tr>
+				<td><a href="javascript:;" onclick="javascript:recordinfo({$record['userid']});">{$record['username']}</a></td>
+				<td>{$record['usertypename']}</td>
+                <td>{$record['contact']}</td>
+				<td>{$record['provider']}</td>
+				<td>{$record['code']}</td>
+				<td>{$record['fee']}</td>
+				<td>{$record['createtime']}</td>
+				<td>{$record['statusname']}</td>
+				<td>{$record['operate_typename']}</td>
+				<td>{$record['user_name']}</td>
+			</tr>
+            </foreach>
+            <tr>
+                <td class="line_l">&nbsp;</td>   
+                <td class="line_l">&nbsp;</td>
+                <td class="line_l">&nbsp;</td>
+                <td class="line_l">&nbsp;</td>
+                <td class="line_l">&nbsp;</td>
+                <td class="line_l">总计:{$recharge_total}</td>  
+                <td class="line_l">&nbsp;</td>  
+                <td class="line_l">&nbsp;</td>  
+                <td class="line_l">&nbsp;</td>  
+                <td class="line_l">&nbsp;</td>  
+            </tr>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<div class="windows_box win_510" id="view_task" ></div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/finance.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-ui-1.7.2.custom.min.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.datetimepicker.js" ></script>
+<script>
+$(document).ready(function(){
+    $('#starttime,#endtime').datetimepicker({
+        lang:'ch',
+        timepicker:true,
+        format:'Y-m-d H:i',
+        formatDate:'Y-m-d H:i'
+    });
+});
+</script>
+<include file="Public/_footer" />

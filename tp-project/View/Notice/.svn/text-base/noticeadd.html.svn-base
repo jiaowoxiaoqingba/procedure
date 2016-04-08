@@ -1,0 +1,118 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css"/>
+<style type="text/css">
+    .add_right{
+        border:1px solid #7093DB;cursor:pointer;background:#7093DB;color:#fff;text-align: center;align:right;display: block;line-height: 40px;width:100px;height:40px;font-size: 16px;margin-top: -15px;float: right;
+    }
+</style>
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <a href="javascript:history.go(-1)"><span class="add_right"><<返回上一级</span></a>
+    <form action="{:U('/index.php/admin/notice/noticeinsert')}" id="form" name="form" method="post">
+    
+    <div class="input_box">
+           <span class="bh-checkText" style="float:left;">公告标题：</span>
+           <input name="noticename" type="text" size="30" />
+    </div>    
+    <div class="input_box">
+           <span class="bh-checkText" style="float:left;">公告内容：</span>
+           <textarea name="noticenote" cols="30" rows="3"></textarea>
+    </div>    
+    <div class="input_box">
+           <span class="bh-checkText" style="float:left;">公告类型：</span>
+           <select name="type" id="select_type">
+               <option value="1">系统消息</option>
+               <!--option value="2">广告主用户消息</option>
+               <option value="4">自媒体主用户消息</option-->
+           </select>
+    </div>
+    <div id="accept_num"  class="input_box">
+        <span class="bh-checkText" style="float:left;">用户类型：</span>
+        <select name='acceptuser_one'>
+            <option value='1' >独立广告主</option>
+            <option value='2' >代理商</option>
+            <option value='3' >代理商的广告主</option>
+            <option value='4' >自媒体主</option>
+        </select>
+    </div>
+    <div class="input_box" style="padding-left: 80px;padding-top:10px;">   
+          <input type="submit" value=" 提 交 " />
+    </div>
+    </form>
+</div>
+<div class="windows_box win_510" id="view_task" ></div>
+<script type="text/javascript">
+    //添加公告时，检索接收用户名
+$("#searched").live("click",function(){
+    var id = $(this).prev().val();
+    var u_name = $(this).prev().prev().val();
+    $.ajax({
+        url:"__CONTROLLER__/user_view",
+        data:{id:id,u_name:u_name},
+        dataType:"json",
+        type:"POST",
+        success: function(dat){
+            $("#view_task").html(dat);
+            $('#view_task').show();
+            $(".close_btn").click(function(){
+                $('#view_task').hide();
+            });
+        },
+        error : function(){
+            alert("error");
+        }
+    });
+});
+
+//添加公告的点击改变
+$("#select_type").change(function(){
+    var contents = "";
+    var sid = $(this).val();
+    if(sid == '1') {
+        contents += '<span class="bh-checkText" style="float:left;">用户类型：</span>';
+        contents += "<select name='acceptuser_one'>";
+        contents += "<option value='1' >独立广告主</option>";
+        contents += "<option value='2' >代理商</option>";
+        contents += "<option value='3' >代理商的广告主</option>";
+        contents += "<option value='4' >自媒体主</option>";
+        contents += "</select>";
+        $("#accept_num").html(contents);
+    }else if(sid == '2') {
+        contents += '<span class="bh-checkText" style="float:left;">接收用户名：</span>';
+        contents += ' <input type="text" name="acceptuser_two" />';
+        contents += ' <input type="hidden" name="sid" value="2" />';
+        contents += ' <button onclick="return false;" id="searched">检索</button>';
+        $("#accept_num").html(contents);
+    }else {
+        contents += '<span class="bh-checkText" style="float:left;">接收用户名：</span>';
+        contents += ' <input type="text" name="acceptuser_two" />';
+        contents += ' <input type="hidden" name="sid" value="4" />';
+        contents += ' <button onclick="return false;" id="searched">检索</button>';
+        $("#accept_num").html(contents);
+    }
+});
+
+//选中
+    function allpass(type){
+        var id = '';
+        $("input:checkbox[name=checked]:checked").each(function(){
+            id += $(this).val()+",";
+        });
+        if(id == ''){
+            alert('请先选择！');
+        }else{
+            $.ajax({
+                url:"__CONTROLLER__/checked",
+                dataType:"json",
+                data:{id:id,type:type},
+                type:"POST",
+                success:function(data){
+                        $('#view_task').hide();
+                        $("input[name=acceptuser_two]").val(data);
+                }
+            });
+        }
+    }
+</script>
+<script type="text/javascript" src="__PUBLIC__/admin/js/notice.js" ></script>
+<include file="../Public/_footer" />

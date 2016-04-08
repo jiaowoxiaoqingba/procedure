@@ -1,0 +1,92 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <div>
+    <form action="{:U('/index.php/admin/artissue/blogdeletelist')}" method="post" enctype="multipart/form-data">
+        <label>平台订单ID：</label>
+        <input type="text" name="tid" value="{$tid}"  placeholder="平台订单ID"/>
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>
+    </div>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="20%">订单ID</th>
+                <th class="line_l" width="20%">接单人</th>
+                <th class="line_l" width="20%">任务名称</th>
+                <th class="line_l" width="20%">发布时间</th>
+                <th class="line_l" width="20%">操作</th>
+            </tr>
+            <foreach name="orders" item="order">
+            <tr id="tr{$order['orderid']}">
+                <td>{$order['orderid']}</td>
+                <td><a href="javascript:;" onclick="mediauser_info({$order['payeeid']});">{$order['user_name']}</a></td>
+                <td><a href="javascript:;" onclick="taskinfo({$order['taskid']},{$order['orderid']});">{$order['taskname']}</a></td>
+                <td>{$order['publishtime']}</td>
+                <td><a href="javascript:;" class="blue2 taskName" vid="{$order['orderid']}" onclick="artissueinfo(this)" att="0">查看抓取记录</a>
+                　|　
+                <if condition="$order['typestatus'] eq 9">
+                <a href="javascript:;" style="color:#ddd;">订单中止</a>
+                <else />
+                <a href="javascript:;" onclick="updatestate({$order['orderid']})">订单中止</a>
+                </if>
+                </td>
+            </tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/blogtaskorders.js" ></script>
+<script type="text/javascript">
+
+//下拉项的出现
+function artissueinfo(obj){
+    var att=$(obj).attr("att");
+    var id=$(obj).attr("vid");
+    if(att==0){     
+        $(".detail").slideUp("fast");
+        $(".detail").remove();
+        $(obj).parents("tr").siblings("tr").find(".taskName").attr("att","0");
+        $(obj).parents("tr").siblings("tr").find(".taskName").removeClass("se");
+        $(obj).attr("class","blue2 taskName se");
+        $.post("{:U('/admin/artissue/issueinfo')}",{orderid:id}, function(ret){
+            $("#tr"+id).after("<tr class='detail' id='aaa"+id+"'>"+ret+"</tr>"); 
+            $("#aaa"+id).slideDown("fast");
+       });
+       $(obj).attr("att","1");
+    }
+    if(att==1){
+        $("#aaa"+id).slideDown("slow");
+        $("#aaa"+id).remove();
+        $(obj).attr("class","blue2 taskName");
+        $(obj).attr("att","0");
+    }
+}
+
+function updatestate(orderId){
+    $.ajax({
+        type: "POST",
+        url: "/admin/artissue/updatestate",
+        dataType : "json",// 指定返回类型 
+        data: {
+            id:orderId      
+        },// 传递到后台的参数
+        success: function(data){
+            if(data.err == 0){
+                alert(data.msg);
+                window.location.reload();
+            }else{
+                alert(data.msg);
+            }
+        }
+    });
+}
+
+</script>
+<div class="windows_box win_510" id="view_task" ></div>
+<include file="Public/_footer" />

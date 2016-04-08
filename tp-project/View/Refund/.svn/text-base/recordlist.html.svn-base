@@ -1,0 +1,75 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <form action="{:U('/index.php/admin/refund/recordlist')}" method="post" enctype="multipart/form-data">
+        <span style="float:left;">开始时间　</span>
+        <input name="starttime" id="starttime" type="text" readonly value="{$starttime}" /> 
+        <img src="__PUBLIC__/images/date.gif" style="cursor:pointer;" onclick="SelectDateByClickImg('starttime','yyyy-MM-dd hh:mm:ss');" />
+        <span class="line">-</span> 
+        <input name="endtime" id="endtime" type="text" readonly value="{$endtime}" /> 
+        <img src="__PUBLIC__/images/date.gif" style="cursor:pointer;" onclick="SelectDateByClickImg('endtime','yyyy-MM-dd hh:mm:ss');" />
+         
+        <br/>
+        &nbsp;&nbsp;
+        <select name="plattype">
+                <option  value="">-退款平台-</option>
+                <option  value="1" {$plattype == '1' ? 'selected' : ''} >支付宝</option>
+                <option  value="2" {$plattype == '2' ? 'selected' : ''} >微信钱包</option>
+        </select>
+        &nbsp;&nbsp;
+        <select name="status">
+                <option  value="">-退款平台-</option>
+                <option  value="1" {$status == '1' ? 'selected' : ''} >退款成功</option>
+                <option  value="2" {$status == '2' ? 'selected' : ''} >调用退款接口失败</option>
+                <option  value="3" {$status == '3' ? 'selected' : ''} >帐户减钱失败</option>
+        </select>
+        &nbsp;&nbsp;
+        <select name="role">
+        		<option  value="">-选择身份-</option>
+        		<option  value="0" {$role === '0' ? 'selected' : ''} >独立广告主</option>
+                        <option  value="1" {$role == '1' ? 'selected' : ''} >代理商</option>
+        		<option  value="2" {$role == '2' ? 'selected' : ''} >代理商的广告主</option>
+        </select>
+        &nbsp;&nbsp;
+        用户名：
+        <input type="text" name="username" value="{$username}" />
+        &nbsp;&nbsp;
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th class="line_l" width="10%">用户名</th>
+                <th class="line_l" width="10%">身份</th>
+                <th class="line_l" width="10%">联系人</th>
+                <th class="line_l" width="10%">流水号</th>
+                <th class="line_l" width="10%">退款金额</th>
+                <th class="line_l" width="15%">退款时间</th>
+                <th class="line_l" width="10%">退款接口</th>
+                <th class="line_l" width="15%">状态</th> 
+                <th class="line_l" width="10%">操作员</th>
+            </tr>
+            <foreach name="refunds" item="refund">
+	<tr>
+                <td>{$refund['username']}</td>
+                <td>{$rolelist[$refund['role']]}</td>
+                <td>{$refund['contact']}</td>
+                <td>{$refund['tradeno']}</td>
+                <td>{$refund['fee']}</td>
+                <td>{$refund['createtime']}</td>
+                <td>{$plattypelist[$refund['plattype']]}</td>
+                <td>{$statuslist[$refund['status']]}</td>
+                <td>{$refund['manager_user']}</td>
+	</tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<div class="windows_box win_510" id="view_task" ></div>
+<script src="__PUBLIC__/js/Calendar.js" type="text/javascript" language="javascript"></script>
+<include file="../Public/_footer" />

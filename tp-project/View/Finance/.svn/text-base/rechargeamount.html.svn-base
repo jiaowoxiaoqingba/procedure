@@ -1,0 +1,38 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<style type="text/css">
+    #tab_mod{
+        width:220px;height:80px;border:1px solid #ddd;position:absolute;left:350px;top:100px;z-index:20px;background:#32DC32;display:none;
+    }
+    .closebtn{
+        width:15px;height:15px;border:1px solid #ddd; text-align:center;float:right;
+    }
+</style>
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <div class="page_tit">给编号是[{$platform_user['id']}],用户名是[{$platform_user['username']}],其他信息分别为：email-{$platform_user['email']}、mobile-{$platform_user['mobile']}</div>
+    <hr/>
+    <div style="height:40px;line-height:30px;">
+    <form action="" id="form" name="form" method="post"> 
+       <div class="search_box">
+        <input id="nick_recharge" name="nick_recharge" type="hidden" value="{$platform_user['username']}"/>
+        <input id="reset_platform_user_id_recharge" name="reset_platform_user_id_recharge" type="hidden" value="{$platform_user['id']}" />
+        <input id="reset_recharge" name="reset_recharge" type="text" placeholder="金额,单位元" onkeyup="clearNoNum(this)"  onafterpaste="clearNoNum(this)"/>&nbsp;&nbsp;<font style="color:red;">元</font>&nbsp;&nbsp;
+        <input type="button" onclick="javascript:view_reset_recharge();" class="form_btn" value="提交" />
+        <div class="clearall"></div>
+    </div>
+    </form>
+    </div> 
+</div>
+<!--确认充值金额-->
+<div class="windows_box win_270" id="audit_recharge">
+    <div class="win_con">
+        <div id="audit_recharge_content" class="win_alert">招商银行，充值：10000.00元？</div>
+        <div class="btn_area"><a href="javascript:reset_recharge()" class="win_btn"><span>提交</span></a><a href="javascript:void(0)" class="win_btn close_btn" rel="777"><span>取消</span></a></div>
+    </div>
+</div>
+<!--设置提示浮动层-->
+<div id="save_layer" class="layer_prompt">设置成功！</div> 
+<script type="text/javascript" src="__PUBLIC__/admin/js/finance.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/function.js" ></script>
+<include file="Public/_footer" />

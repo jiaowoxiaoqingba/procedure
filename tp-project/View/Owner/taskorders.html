@@ -1,0 +1,38 @@
+<include file="Public/_header" />
+<style type="text/css">
+    .right{display:block;text-align:reight;}
+    .clear{clear:both;}
+    .attention{border: 1px solid #E1DB66; background: #FFFFD7; line-height: 18px;padding: 7px;margin-bottom: 15px;}
+</style>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>   
+    <div class="list">
+        <span class="right"><a href="javascript:history.go(-1)"><<返回上一级</a></span>
+        <div class="clear"></div>
+        <div class="attention">已选择媒体帐号数：{$count},可覆盖粉丝：{$fansnum},预计总金额：{$moneytotal}</div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="25%">订单ID</th>
+                <th class="line_l" width="25%">媒体帐号昵称</th>
+                <th class="line_l" width="25%">订单金额</th>
+                <th class="line_l" width="25%">备注</th>
+            </tr>
+            <foreach name="taskorders" item="taskorder">
+            	<tr>
+                    <td>{$taskorder['id']}</td>
+                    <td><a href="javascript:;" onclick="mediauser_info({$taskorder['payeeid']});">{$taskorder['nick']}</a></td>
+                    <td>{$taskorder['realadprice']}</td>
+            	  <td>{$taskorder['desc']}</td>
+            	</tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<div class="windows_box win_510" id="view_task" ></div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/taskorders.js" ></script>
+<include file="../Public/_footer" />

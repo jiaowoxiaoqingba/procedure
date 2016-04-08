@@ -1,0 +1,80 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.datetimepicker.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery-ui-1.7.2.custom.css" >
+<div class="so_main">  
+    <div class="page_tit">{$tempowner_name}{$funcdesc}</div>
+    <form action="{:U('/index.php/admin/owner/tasklist')}" method="post" enctype="multipart/form-data">
+        <label>充值日期：</label> 
+        <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+        <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+        <br/>
+        类型：
+        <select name="type">
+        		<option  value="">-请选择-</option>
+        		<option  value="1" {$type == '1' ? 'selected' : ''} >直发</option>
+        		<option  value="2" {$type == '2' ? 'selected' : ''} >转发</option>
+        </select>
+        &nbsp;&nbsp;
+        平台类型：
+        <select name="plattype">
+        		<option  value="">-请选择-</option>
+        		<option  value="0" {$plattype == '0' ? 'selected' : ''} >公众微信号</option>
+        		<option  value="1" {$plattype == '1' ? 'selected' : ''} >朋友圈</option>
+                <option  value="2" {$plattype == '2' ? 'selected' : ''} >新浪微信</option>
+        </select>
+        &nbsp;&nbsp;
+        状态：
+        <select name="status">
+        		<option  value="">-请选择-</option>
+        		<option  value="0" {$status == '0' ? 'selected' : ''} >草稿</option>
+        		<option  value="1" {$status == '1' ? 'selected' : ''} >待审核</option>
+        		<option  value="2" {$status == '2' ? 'selected' : ''} >审核通过</option>
+        		<option  value="3" {$status == '3' ? 'selected' : ''} >未通过</option>
+        		<option  value="4" {$status == '4' ? 'selected' : ''} >结束</option>
+        		<option  value="5" {$status == '5' ? 'selected' : ''} >叫停</option>
+        		<option  value="6" {$status == '6' ? 'selected' : ''} >删除</option>
+        		<option  value="7" {$status == '7' ? 'selected' : ''} >取消</option>
+        </select>
+        &nbsp;&nbsp;
+        广告主名称：<input type="text" id="content" maxlength="200" name="username" value="{$username}"/>
+        <input type="hidden" id="wid" maxlength="200" name="wid" value="{$wid}"/>
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="5%">任务ID</th>
+                <th class="line_l" width="20%">任务名称</th>
+                <th class="line_l" width="10%">任务类型</th>
+                <th class="line_l" width="10%">平台类型</th>
+                <th class="line_l" width="10%">状态</th>  
+                <th class="line_l" width="5%">派单数</th>  
+                <th class="line_l" width="10%">预计金额</th>  
+                <th class="line_l" width="15%">创建时间</th>  
+                <th class="line_l" width="5%">审核员</th>   
+            </tr>
+            <foreach name="tasks" item="task">
+			<tr>
+                <td>{$task['id']}</td>
+                <td>{$task['taskname']}</td>
+                <td>{$task['type']}</td>
+                <td>{$task['plattype']}</td>
+                <td>{$task['statusname']}</td>
+                <td><a href="__CONTROLLER__/taskorders/id/{$task['id']}">{$task['orderrows']}</a></td>
+                <td>{$task['total_price']}</td>
+                <td>{$task['createtime']}</td>
+                <td>{$task['managername']}</td>
+			</tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/owner.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-ui-1.7.2.custom.min.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.datetimepicker.js" ></script> 
+<include file="Public/_footer" />

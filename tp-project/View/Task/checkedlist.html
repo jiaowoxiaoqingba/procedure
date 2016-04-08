@@ -1,0 +1,153 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.datetimepicker.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery-ui-1.7.2.custom.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <div style="height:70px;line-height:30px;">
+    <form action="{:U('/index.php/admin/task/checkedlist')}" method="post" enctype="multipart/form-data">
+        <label>创建日期:</label> 
+        <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+        <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+        <label>任务ID:</label>
+        <input type="text" name="tid" value="{$tid}"  placeholder="任务ID"/>
+        <br/>
+        <label>任务类型:</label> 
+        <select name="type">
+        		<option  value="">-请选择-</option>
+        		<option  value="0" {$type == '0' ? 'selected' : ''} >直发</option>
+        		<option  value="1" {$type == '1' ? 'selected' : ''} >转发</option>
+        </select>
+        &nbsp;&nbsp;
+        <label>任务状态:</label>
+        <select name="status">
+        		<option  value="">-请选择-</option>
+        		<option  value="2" {$status == '2' ? 'selected' : ''} >审核通过</option>
+        		<option  value="3" {$status == '3' ? 'selected' : ''} >未通过</option>
+        		<option  value="4" {$status == '4' ? 'selected' : ''} >结束</option>
+        		<option  value="5" {$status == '5' ? 'selected' : ''} >叫停</option>
+        </select>
+        &nbsp;&nbsp;
+        <label>任务名称:</label>
+        <input type="text" id="content" maxlength="200" name="content" value="{$content}" placeholder="任务名称"/>
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>
+    </div>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="5%">任务ID</th>
+                <th class="line_l" width="20%">任务名称</th>
+                <th class="line_l" width="10%">任务类型</th>
+                <th class="line_l" width="10%">平台类型</th>
+                <th class="line_l" width="10%">状态</th>  
+                <th class="line_l" width="5%">派单数</th>  
+                <th class="line_l" width="10%">预计金额</th>  
+                <th class="line_l" width="15%">创建时间</th>  
+                <th class="line_l" width="5%">审核员</th>  
+                <th class="line_l" width="10%">操作</th>  
+            </tr>
+            <foreach name="tasks" item="task">
+		    <tr>
+			    <td>{$task['id']}</td>
+			    <td><a href="javascript:;" onclick="javascript:taskinfo({$task['id']});">{$task['taskname']}</a></td>
+                <td>{$task['type']}</td>
+                <td>{$task['plattype']}</td>
+                <td>{$task['statusname']}</td>
+                <td><a href="__CONTROLLER__/taskorders/id/{$task['id']}">{$task['orderrows']}</a></td>
+                <td>{$task['total_price']}</td>
+                <td>{$task['createtime']}</td>
+                <td>{$task['managername']}</td>
+			    <td>
+                    <if condition="($task['status'] eq 2)"> 
+                        <a name="stop" href="javascript:viewRejectTask({$task['id']});">叫停</a>
+                   <else/>
+                        -----------
+                    </if> 
+                </td>
+		    </tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>   
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#starttime,#endtime').datetimepicker({
+        lang:'ch',
+        timepicker:true,
+        format:'Y-m-d H:i',
+        formatDate:'Y-m-d H:i'
+    });
+    $(".close_btn").click(function(){
+        $("#audit_refuse").hide();
+    });
+});
+function updateTaskStatus(taskId,updateStatus){
+    var rejectDesc = $("#rejectDesc").val();
+    $.ajax({
+        type: "POST",
+        url: "/admin/task/taskpass.html",
+        //dataType : "json",// 指定返回类型 
+        data: {
+            act:'updateTaskStatus',
+            taskId:taskId,
+            updateStatus:updateStatus,
+            rejectDesc:rejectDesc
+        },// 传递到后台的参数
+        success: function(data) {  
+            if(data=="success"){
+                var url = getUrl();
+                window.location.reload();
+            }else if(data=="Handle"){
+                alert("任务已处理");                         
+            }else{
+                alert("错误："+data);
+            }
+        },
+        error : function(){
+            alert("error");
+        }
+    });
+}
+function getUrl(){
+    var currentPage = $("a[class='active']").text();
+    currentPage = currentPage.replace(/[^0-9]/ig,""); 
+    var url = "/admin/task/unchecklist/p/"+currentPage+".html";
+    
+    return url;
+}
+
+function rejectTask(taskId){
+    updateTaskStatus(taskId,5);
+    $("#audit_refuse").hide();
+}
+
+//弹出任务拒绝浮层
+function viewRejectTask(taskId){
+    var _js = "javascript:rejectTask("+taskId+");"
+    $("#audit_refuse_a").attr("href",_js);
+    $("#audit_refuse").show();
+}
+</script>
+<div class="windows_box win_510" id="view_task" ></div>
+<!--审核拒绝-->
+<div class="windows_box win_510" id="audit_refuse">
+    <div class="win_title">
+        <span class="win_name">拒绝原因</span>
+      <a href="javascript:void(0)" rel="777" class="close_btn"></a>
+    </div>
+    <div class="win_con">
+        <div class="textarea">
+            <textarea id="rejectDesc" name="rejectDesc" onfocus="$(this).html('')">请帮助企业提出修改建议，简明扼要</textarea>
+        </div>
+        <div class="btn_area"><a id="audit_refuse_a" href="javascript:rejectTask();" class="win_btn"><span>提交</span></a></div>
+    </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-ui-1.7.2.custom.min.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.datetimepicker.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/admin/js/tasks.js" ></script>
+<include file="Public/_footer" />

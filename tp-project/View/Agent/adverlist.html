@@ -1,0 +1,50 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <div>  
+    <form action="{:U('/index.php/admin/agent/adverlist')}" method="post" enctype="multipart/form-data">
+        <select name="status">
+           <option value="">开通状态</option>
+           <option value="1" <if condition="$sign eq 1">selected</if> >开通</option>
+           <option value="2" <if condition="$sign eq 2">selected</if> >未开通</option>
+        </select>
+        &nbsp;&nbsp;
+        <label>代理商用户名：</label>
+        <input type="text" name="agentname" value="{$agentname}" placeholder="代理商用户名" />
+        &nbsp;&nbsp;
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>
+    </div>  
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+              <th align="center" nowrap="nowrap">用户名</th>
+              <th nowrap="nowrap">代理商</th>
+              <th nowrap="nowrap">帐号余额</th>
+              <th nowrap="nowrap">所属销售</th>
+              <th nowrap="nowrap">店铺URL</th>
+              <th nowrap="nowrap">创建时间</th>
+              <th nowrap="nowrap">开通状态</th> 
+            </tr>
+            <foreach name="data" item="vo">
+            <tr>
+              <td><a href="javascript:;" name="a_view" ajax-url="/admin/agent/adverinfoview.html" ajax-data="id={$vo['userid']}">{$vo['r_username']}</a></td>
+              <td>{$vo['agentusername']}</td>
+              <td>{$vo['r_usebalance']}</td>
+              <td>{$vo['saler']}</td>
+              <td>{$vo['shopurl']}</td>
+              <td>{$vo['createtime']}</td>
+              <td><if condition="$vo['userid'] neq 0 ">开通<else />未开通</if></td>
+            </tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<div class="windows_box win_510" id="view_user" ></div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/adverapply.js" ></script>
+<include file="Public/_footer" />

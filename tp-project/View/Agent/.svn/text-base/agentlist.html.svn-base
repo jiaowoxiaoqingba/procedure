@@ -1,0 +1,62 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.datetimepicker.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery-ui-1.7.2.custom.css">
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <div>  
+    <form action="{:U('/index.php/admin/agent/agentlist')}" method="post" enctype="multipart/form-data">
+        <label>创建日期：</label> 
+        <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+        <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+        &nbsp;&nbsp;
+        <label>代理商用户名：</label>
+        <input type="text" name="username" value="{$username}" placeholder="代理商用户名" />
+        &nbsp;&nbsp;
+        <input id="baocun-btn" type="submit" value="搜索">&nbsp;&nbsp;&nbsp;<input type="button" id="add_btn" value="添加代理商" /> 
+    </form>
+    </div>  
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="14%">用户名</th>
+                <th class="line_l" width="14%">公司名称</th>
+                <th class="line_l" width="14%">客户数</th>
+                <th class="line_l" width="14%">可用金额</th>
+                <th class="line_l" width="14%">创建时间</th>  
+                <th class="line_l" width="14%">注册时间</th>  
+                <th class="line_l" width="16%">操作</th>  
+            </tr>
+            <foreach name="data" item="vo">
+            <tr>
+                <td>{$vo['username']}</td>
+                <td>{$vo['company']}</td>
+                <td>{$vo['customers']}</td>
+                <td>{$vo['usebalance']}</td>
+                <td>{$vo['createtime']}</td>
+                <td>{$vo['regtime']}</td>
+                <td><if condition="$vo['userid'] neq 0"><a href="javascript:;" ajax-data="{$vo['id']}">修改</a><else />未注册</if></td>
+            </tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<div class="windows_box win_510" id="view_user" ></div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/agent.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-ui-1.7.2.custom.min.js" ></script> 
+<script type="text/javascript" src="__PUBLIC__/js/jquery.datetimepicker.js" ></script> 
+<include file="Public/_footer" />
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#starttime,#endtime').datetimepicker({
+        lang:'ch',
+        timepicker:true,
+        format:'Y-m-d H:i',
+        formatDate:'Y-m-d H:i'
+    });
+});
+</script>

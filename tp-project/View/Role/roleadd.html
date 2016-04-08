@@ -1,0 +1,38 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css"/>
+<style type="text/css">
+    .add_right{
+        border:1px solid #7093DB;cursor:pointer;background:#7093DB;color:#fff;text-align: center;align:right;display: block;line-height: 40px;width:100px;height:40px;font-size: 16px;margin-top: -15px;float: right;
+    }
+</style>
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <a href="javascript:history.go(-1)"><span class="add_right"><<返回上一级</span></a>
+    <form action="{:U('/index.php/admin/role/roleinsert')}" id="form" name="form" method="post">
+    
+    <div class="input_box">
+           <span class="bh-checkText" style="float:left;">角色名称：</span>
+           <input name="role" type="text" size="30" />
+    </div>
+    <div class="input_box">
+        <span class="bh-checkText" style="float:left;">权限：</span>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+            <volist name="sysfuncs" id="sysfunc" mod="3">
+                   <if condition="$key neq 0">
+                   <eq name="mod" value="0"></tr><tr></eq>
+                   </if>　
+                   <td>
+                    <input type="checkbox" name="funcids[]" value="{$sysfunc['id']}" >
+                    <if condition="$sysfunc['sign'] eq 1 "> <span style="color:red;">N -- </span> <else /> <span style="color:blue;">O -- </span> </if>
+                    <if condition="$sysfunc['descript'] eq ''"> {$sysfunc['func']} <else />{$sysfunc['descript']}</if> 
+                   </td>
+            </volist>
+        </table>
+    </div>
+    <div class="input_box" style="padding-left: 80px;padding-top:10px;">   
+          <input type="submit" value=" 提 交 " />
+    </div>
+    </form>
+</div>
+<include file="Public/_footer" />

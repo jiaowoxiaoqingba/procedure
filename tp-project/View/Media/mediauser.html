@@ -1,0 +1,66 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css"/>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css"/>
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <font color="red" style="line-height:30px;">注意：本操作将删除系统独立自媒体用户(微信公众号等)，请谨慎操作！</font>
+    
+    <form action="{:U('/index.php/admin/media/mediauser')}" method="post" enctype="multipart/form-data">
+        <div>
+            <span>
+                <label>选择自媒主状态:</label>
+                <select name="plattype">
+                    <option value="">全部</option>
+                    <volist name="aplattype"  id="vo" >
+                        <option value="{$key}" <if condition="$plattype eq $key and $plattype neq ''">selected="selected"</if>>{$vo}</option>
+                    </volist>
+                </select>
+            </span>
+            <span>
+                <label>帐户名称：</label>
+                <input id="kwd" name="kwd" type="text" value="{$sKeyword}" style="width:200px;">
+            </span>
+            <input type="submit" class="win_btn" value="搜索">
+        </div>
+    </form>    
+    <div class="list" style="margin-top:5px;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+              <th style="width:40px;">ID</th>
+              <th>平台</th>
+              <th style="width:120px;">平台ID</th>
+              <th>昵称</th>
+              <th style="width:50px;">粉丝</th>
+              <th>用户类型</th>
+              <th>注册时间</th>
+              <th>操作</th>
+            </tr>
+            <volist name="datalist"  id="vo" >
+                <tr overstyle='on' id="{$vo.id}" class="manager">
+                    <td>{$vo.id}</td>
+                    <td>{$vo.plattypename}</td>
+                    <td>{$vo.platid}</td>
+                    <td>{$vo.nick}</td>
+                    <td>{$vo.followers_count}</td>
+                    <td>{$vo.leveltype}</td>
+                    <td>{$vo.createtime}</td>
+                    <td><a onclick="_destroy('{$vo.id}');" href="javascript:;">注销</a></td>
+                </tr>
+            </volist>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<script type="text/javascript">
+function _destroy(id){
+    if (!confirm('确定要注销这个用户吗？注销后用户数据将全部删除!')) {
+        return false;
+    }
+    $.get('/index.php/admin/media/destroy_mediauser/id/'+id, function(){
+       $("#"+id).remove();
+   }, 'json');
+};
+</script>
+<include file="Public/_footer" />

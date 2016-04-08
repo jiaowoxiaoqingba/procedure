@@ -1,0 +1,108 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery-ui-1.7.2.custom.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <form action="{:U('/index.php/admin/draw/draw')}" method="post" enctype="multipart/form-data">
+            <label>手机号:</label>
+            <input type="text" name="tell" value="{$tell}" placeholder="输入手机号"/>
+            &nbsp;&nbsp;
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="10%">序号</th>
+                <th class="line_l" width="15%">手机号</th>
+                <th class="line_l" width="15%">支付宝实名</th>
+                <th class="line_l" width="15%">支付宝</th>
+                <th class="line_l" width="15%">微钱包（UID）</th>
+                <th class="line_l" width="15%">默任提现方式</th>  
+                <th class="line_l" width="15%">操作</th>
+            </tr>
+            <foreach name="draws" item="draw">
+                <tr id="user_list_{$draw.id}">
+                <td>{$draw.id}</td>
+                <td>{$draw.username}</td>
+                <td>{$draw.alipay_name}</td>
+                <td>{$draw.taobao_pay}</td>
+                <td>{$draw.sina_pay}</td>
+                <td>{$draw.default}</td>
+                <td><a href="javascript:;" onclick="formDraw({$draw.id},'{$draw.username}');">编辑</a></td>
+                </tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<div id="draw" title="提现设置">
+<form action="?" id="draw_form">
+<table height="30" class="view_task">
+    <tr><td colspan="2" align="center"></td></tr>
+    <tr><th width="100" align="right">支付宝实名：</th><td><input type="text" name="alipay_name" style="width:200px;" value="" datatype="Require" msg="" placeholder="添写支付宝实名"></td></tr>
+    <tr><th width="100" align="right">支付宝：</th><td><input type="text" name="taobao_pay" style="width:200px;" value="" datatype="Require" msg="" placeholder="添写支付宝"></td></tr>
+    <tr><th width="100" align="right">提现方式：</th><td><input type="hidden" name="plattype" value="1" >支付宝</td></tr>
+</table>
+</form>
+</div>
+<script src="__PUBLIC__/js/jquery-ui-1.7.2.custom.min.js" ></script>
+<script type="text/javascript">
+    var uid = 0;
+    $('#draw').dialog({
+        autoOpen: false,//如果设置为true，则默认页面加载完毕后，就自动弹出对话框；相反则处理hidden状态。
+        bgiframe: true, //解决ie6中遮罩层盖不住select的问题
+        width: 600,
+        modal: true,//这个就是遮罩效果
+        buttons: {
+            "取消": function () {
+                $(this).dialog("close");
+            },
+            "确定": function () {
+                var alipay_name = $('input[name="alipay_name"]').val();
+                var taobao_pay = $('input[name="taobao_pay"]').val();
+//                var sina_pay = $('input[name="sina_pay"]').val();
+                var plattype = 1;
+                if(!alipay_name){
+                    alert('请输入支付宝实名');
+                    return;
+
+                }else if(plattype == 1 && !taobao_pay){
+                    alert('请输入支付宝帐号');
+                    return;
+                }
+                
+                $.ajax({
+                    url:'__CONTROLLER__/setDrawAction',
+                    type:'POST',
+                    dataType:'json',
+                    data:{userid:uid,alipay_name:alipay_name,taobao_pay:taobao_pay,plattype:plattype},
+                    success:function(data){
+                        if(data.err == 1){
+                            alert(data.msg);
+                        }else{
+                            window.location.reload();
+                        }
+                    }
+                });
+            }
+        }
+    });
+    function formDraw(id,name){
+        uid = id;
+        var obj = $('#draw');
+        var realname = $('#user_list_'+id+' td').eq(2).text();
+        var taobao = $('#user_list_'+id+' td').eq(3).text();
+//        var sina = $('#user_list_'+id+' td').eq(4).text();
+        $('input[name="alipay_name"]').val(realname);
+        $('input[name="taobao_pay"]').val(taobao);
+//        $('input[name="sina_pay"]').val(sina);
+        obj.find('td').eq(0).html(name+'的提现方式');
+        obj.dialog('open');
+    }
+    $(document).ready(function(){
+    });
+</script>
+<include file="Public/_footer" />

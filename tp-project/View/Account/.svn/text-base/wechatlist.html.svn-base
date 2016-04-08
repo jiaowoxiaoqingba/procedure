@@ -1,0 +1,92 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.datetimepicker.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery-ui-1.7.2.custom.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/navmenu.css" > 
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+
+    <include file="_menu" />
+    <div class="clear"></div>
+    <hr/>
+    <div>
+        <div style="height:100px;line-height:30px;">
+            <form action="{:U('/index.php/admin/account/wechatlist')}" method="post" enctype="multipart/form-data">
+            <label>手机号/帐号(自媒体主):</label>
+            <input type="text" name="username" value="{$username}" placeholder="输入手机号或注册帐号"/>
+            <br/>
+            <label>创建日期:</label>
+            <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+            <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+            <label>公众号分类:</label>
+                <select name="mediaclass">
+                    <option value=''>-选择分类-</option>
+                        <foreach name="classtypes" item="vo" >
+                            <option value='{$key}'  <if condition="$mediaclass eq $key ">selected="selected"</if>>{$vo}</option>
+                        </foreach>
+                </select>
+            <label>微信公众号:</label>
+                <input type="text" name="nick" value="{$nick}" placeholder="输入微信公众号"/>
+            <br/>
+            <label>粉&nbsp;&nbsp;丝&nbsp;&nbsp;数:</label>
+                <input class="textbox" type="number" value="{$follower_min}" name="follower_min" placeholder="最小粉丝数"  > -
+                <input class="textbox" type="number" value="{$follower_max}" name="follower_max" placeholder="最大粉丝数" >
+                <input type="hidden" name="status" value="0" />
+                &nbsp;&nbsp;&nbsp;&nbsp; 
+                <input  type="submit" value="查询" />
+            </form>
+          </div>   
+        <div class="list">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>   
+                    <th class="line_l" width="10%">微信昵称(公众号)</th>
+                    <th class="line_l" width="5%">粉丝量</th>
+                    <th class="line_l" width="5%">分类</th>
+                    <th class="line_l" width="7.5%">单图文价格(自)</th>
+                    <th class="line_l" width="7.5%">多图文第一条价格(自)</th>
+                    <th class="line_l" width="7.5%">多图文第二条价格(自)</th>
+                    <th class="line_l" width="7.5%">多图文第三条及以后价格(自)</th>
+                    <th class="line_l" width="7.5%">单图文价格(广)</th>
+                    <th class="line_l" width="7.5%">多图文第一条价格(广)</th>
+                    <th class="line_l" width="7.5%">多图文第二条价格(广)</th>
+                    <th class="line_l" width="7.5%">多图文第三条及以后价格(广)</th>
+                    <th class="line_l" width="10%">创建时间</th>  
+                    <th class="line_l" width="10%">操作</th>
+                </tr>
+                <foreach name="wechats" item="wechat">
+                <tr id="list_{$wechat['wid']}">
+                    <td><a href="javascript:;" onclick="wechatinfo({$wechat['wid']})">{$wechat['nick']}({$wechat['platid']})</a></td>
+                    <td>{$wechat['follower']}</td>
+                    <td>{$wechat['mediaclass']}</td>
+                    <td>{$wechat['media_single_price']}</td>
+                    <td>{$wechat['media_multi_first_price']}</td>
+                    <td>{$wechat['media_multi_two_price']}</td>
+                    <td>{$wechat['media_multi_notfirst_price']}</td>
+                    <td><input type="text" name="adver_single_price" value="{$wechat['adver_single_price']}" style="width:50px;" onkeyup="value=value.replace(/[^\d.]/g,'')" /></td>
+                    <td><input type="text" name="adver_multi_first_price" value="{$wechat['adver_multi_first_price']}" style="width:50px;" onkeyup="value=value.replace(/[^\d.]/g,'')" /></td>
+                    <td><input type="text" name="adver_multi_two_price" value="{$wechat['adver_multi_two_price']}" style="width:50px;" onkeyup="value=value.replace(/[^\d.]/g,'')" /></td>
+                    <td><input type="text" name="adver_multi_notfirst_price" value="{$wechat['adver_multi_notfirst_price']}" style="width:50px;" onkeyup="value=value.replace(/[^\d.]/g,'')" /></td>
+                    <td>{$wechat['date']}</td>
+                    <td><a href="javascript:;" onclick="verify_user(1,{$wechat['wid']})">通过</a>　<a href="javascript:;" onclick="reject(0,{$wechat['wid']});">拒绝</a></td>
+                </tr>
+                </foreach>
+            </table>
+        </div>
+        <div class="Toolbar_inbox">
+            <div class="yema">{$pagehtml}</div>  
+        </div>
+    </div>
+    <div id="tab_refuse">
+            <span class="refuse_reason">拒绝理由</span><div class="refuse_close">X</div>
+        <div style="clear:both;"></div>
+        <div id="refuse_content" style="margin:0 auto;"></div>
+    </div>
+</div>
+<div id="layer"></div>
+<div id="layer_reject"></div>
+<div class="windows_box win_510" id="view_task" ></div>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-ui-1.7.2.custom.min.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.datetimepicker.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/admin/js/account.js" ></script>
+<include file="Public/_footer" />

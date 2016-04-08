@@ -1,0 +1,30 @@
+<td colspan="12" class="p0" style="background:#add8e6;">
+	<div class="table4 task">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tbody>
+				<tr>   
+		                <td width="20%">序　　号</td>
+		                <td width="20%">申诉类型</td>
+		                <td width="20%">申诉时间</td>
+		                <td width="20%">申诉理由</td>
+		                <td width="20%">操　　作</td>
+		            </tr>
+		          <foreach name="orders" item="order">
+				   <tr>
+				              <td>{$order['id']}</td>
+				              <td>{$appealtypelist[$order['appealtype']]}</td>
+				              <td>{$order['createtime']}</td>
+				              <td>{$order['reason']}</td>
+				              <td>
+						  <if condition="$order['status'] eq '1'">
+				              <a href="javascript:;" onclick="appeal_reply({$order['id']});">回馈</a>
+				              <else />
+				              <a href="javascript:;" style="color:#ddd;">回馈</a>
+						  </if>
+				              　　<a href="javascript:;" onclick="appeal_info({$order['id']})">回馈详情</a></td>
+				   </tr>
+		          </foreach>
+			</tbody>
+		</table>
+	</div>
+</td>

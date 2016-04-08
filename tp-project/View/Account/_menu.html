@@ -1,0 +1,17 @@
+<div class="tab_menu">
+    <ul>
+        <a href="__CONTROLLER__/wechatlist/status/waitaudit">
+           <li>
+           <if condition="$tmp eq 'waitaudit' ">
+                <span class="blue">微信公众号待审核列表</span>
+           <else/>　
+                <span>微信公众号待审核列表</span>
+           </if>
+           ｜</li>
+        </a>
+        <a href="__CONTROLLER__/wechatlist/status/editaudit"><li><if condition="$tmp eq 'editaudit' "><span class="blue">微信公众号修改审核列表</span><else/><span>微信公众号修改审核列表</span></if>｜</li>
+        </a>
+        <a href="__CONTROLLER__/wechatlist/status/refuseaudit"><li>　<if condition="$tmp eq 'refuseaudit' "><span class="blue">微信公众号已拒绝列表</span><else/><span>微信公众号已拒绝列表</span>　</if>｜</li></a>
+        <a href="__CONTROLLER__/wechatlist/status/successaudit"><li>　<if condition="$tmp eq 'successaudit' "><span class="blue">微信公众号已审核列表</span><else/><span>微信公众号已审核列表</span>　</if>｜</li></a>
+    </ul>
+</div>

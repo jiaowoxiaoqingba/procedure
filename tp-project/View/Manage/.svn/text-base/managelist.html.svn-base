@@ -1,0 +1,74 @@
+<include file="Public/_header" />
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <form action="{:U('/index.php/admin/manage/managelist')}" method="post" enctype="multipart/form-data">
+        用户类型：
+        <select id="search_roleid" name="search_roleid">
+        {$rolehtml}
+        </select>
+        &nbsp;&nbsp;
+        用户名：<input type="text" id="content" maxlength="200" name="content" value="{$content}"/>
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="5%">序号</th>
+                <th class="line_l" width="15%">用户名</th>
+                <th class="line_l" width="15%">用户类型</th>
+                <th class="line_l" width="15%">真实姓名</th>
+                <th class="line_l" width="15%">创建时间</th>  
+                <th class="line_l" width="15%">最后登录时间</th>  
+                <th class="line_l" width="15%">操作</th>  
+            </tr>
+            <volist name="datalist"  id="vo" >
+                <tr overstyle='on' id="manager_{$vo.id}" class="manager">            
+                    <td>{$vo.id}</td>
+                    <td>{$vo.username}</td>
+                    <td>{$vo.rolename}</td>       
+                    <td>{$vo.truename}</td>
+                    <td>{$vo.createtime}</td>
+                    <td>{$vo.lastlogintime}</td>
+                    <td><span id="oper_{$vo.id}"><eq name="vo.status" value="0">修改 <a href="void(0);" onclick="javascript:delmanager({$vo.id});">删除</a><else/>----</eq></span></td>
+                </tr>
+                <tr overstyle='on' class="managerinfo_{$vo.id}">            
+                    <td style="background-color:#EFEFEF;color:#000000;" colspan=7>
+                        详细内容
+                    </td>
+                </tr>
+            </volist>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="page">{$pagehtml}</div>  
+    </div>
+</div>
+<script>
+    $("tr[class^=managerinfo_]").hide();
+    $(".manager").click(function(){
+        var idstr=$(this).attr("id");
+        var idarr=idstr.split("_");
+        //$("tr[class^=wechatinfo_]").hide();
+        $(".managerinfo_"+idarr[1]).toggle();
+    });
+function delmanager(managerid) {
+        $.ajax({
+            type : "POST",
+            url : "/admin/manage/updatemanage",
+            data : "managerid=" + managerid,
+            dataType: "json",
+            beforeSend : function() {
+                $("#oper_"+managerid).html("删除中，请稍候......");
+            },
+            success : function(dat) {
+                if (dat.err == 0) {
+                    alert("删除成功！");
+                    $("#oper_"+managerid).html("-----");
+                } else {
+                    alert("删除失败！");
+                }
+            }
+        });
+}
+</script>
+<include file="Public/_footer" />

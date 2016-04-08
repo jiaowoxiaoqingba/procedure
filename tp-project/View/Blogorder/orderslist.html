@@ -1,0 +1,91 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <form action="{:U('/index.php/admin/blogorder/orderslist')}" method="post" enctype="multipart/form-data">
+        任务创建人昵称：
+        <input type="text"  maxlength="200" name="user_name" value="{$user_name}"/>
+        &nbsp;&nbsp;
+        平台类型：
+        <select name="plattype">
+        		<option  value="">-请选择-</option>
+        		<option  value="0" {$plattype === '0' ? 'selected' : ''} >微信公众号</option>
+        		<option  value="1" {$plattype == '1' ? 'selected' : ''} >朋友圈</option>
+        </select>
+        &nbsp;&nbsp;
+        类型：
+        <select name="type">
+                <option  value="">-请选择-</option>
+                <option  value="1" {$type == '1' ? 'selected' : ''} >直发</option>
+                <option  value="2" {$type == '2' ? 'selected' : ''} >转发</option>
+        </select>
+        &nbsp;&nbsp;
+        订单状态：
+        <select name="status">
+        		<option  value="">-请选择-</option>
+        		<option  value="0" {$status === '0' ? 'selected' : ''} >未派单</option>
+        		<option  value="1" {$status == '1' ? 'selected' : ''} >派单</option>
+        		<option  value="2" {$status == '2' ? 'selected' : ''} >接单</option>
+        		<option  value="3" {$status == '3' ? 'selected' : ''} >已发布</option>
+        		<option  value="4" {$status == '4' ? 'selected' : ''} >已完成</option>
+        		<option  value="5" {$status == '5' ? 'selected' : ''} >取消</option>
+        		<option  value="6" {$status == '6' ? 'selected' : ''} >失败</option>
+                         <option  value="7" {$status == '7' ? 'selected' : ''} >拒单</option>
+                      <option  value="8" {$status == '8' ? 'selected' : ''} >接单</option>
+                      <option  value="9" {$status == '9' ? 'selected' : ''} >订单中途停止</option>
+        		<option  value="10" {$status == '10' ? 'selected' : ''} >接单后流单</option>
+        </select>
+        &nbsp;&nbsp;
+        任务名称：<input type="text" id="content" maxlength="200" name="content" value="{$content}"/>
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="5%">订单ID</th>
+                <th class="line_l" width="10%">平台类型</th>
+                <th class="line_l" width="10%">平台订单ID</th>
+                <th class="line_l" width="10%">接单人</th>
+                <th class="line_l" width="10%">任务名称</th>  
+                <th class="line_l" width="10%">任务创建人</th>  
+                <th class="line_l" width="10%">类型</th>  
+                <th class="line_l" width="10%">开始时间</th>  
+                <th class="line_l" width="10%">订单价格</th>  
+                <th class="line_l" width="15%">订单状态</th>
+            </tr>
+            <foreach name="orders" item="order">
+	   <tr>
+		<td>{$order['id']}</td>
+                  <td>{$plattypelist[$order['plattype']]}</td>
+                  <td>{$order['platid']}</td>
+		<td><a href="javascript:;" onclick="mediauser_info({$order['payeeid']});">{$order['user_name']}</a></td>
+                 <td><a href="javascript:;" onclick="taskinfo({$order['taskid']});">{$order['taskname']}</a></td>
+                 <td>{$order['username']}</td>
+                 <td>{$typelist[$order['type']]}</td>
+                 <td>{$order['starttime']}</td>
+                 <td>{$order['adprice']}</td>
+                 <td>{$statuslist[$order['status']]}</td>
+	   </tr>
+            </foreach>
+            <tr>
+                 <td class="line_l" width="10%">&nbsp;</td>
+                 <td class="line_l" width="10%">&nbsp;</td>
+                 <td class="line_l" width="10%">&nbsp;</td>
+                 <td class="line_l" width="10%">&nbsp;</td>
+                 <td class="line_l" width="10%">&nbsp;</td>  
+                 <td class="line_l" width="10%">&nbsp;</td>  
+                 <td class="line_l" width="10%">&nbsp;</td>  
+                 <td class="line_l" width="10%">订单总计:{$num_total}</td>  
+                 <td class="line_l" width="10%">总计:{$balance_total}</td>  
+                 <td class="line_l" width="10%">&nbsp;</td>  
+            </tr>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<div class="windows_box win_510" id="view_task" ></div>
+<script type="text/javascript" src="__PUBLIC__/admin/js/taskorders.js" ></script>
+<include file="../Public/_footer" />

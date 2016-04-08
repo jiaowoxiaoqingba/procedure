@@ -1,0 +1,571 @@
+<include file="Public/_header" />
+<style type="text/css">
+    .blue{color:blue;}
+    .tab_menu ul li{float:left;}
+    .clear{clear:both;margin-top: 25px;}
+    .hide{display:none;}
+    #tab_refuse{width:450px;height:200px;border:1px solid #ddd;position:absolute;left:350px;top:100px;z-index:20px;background:pink;display:none;}
+    .refuse_reason{font-weight:bold;font-size:14px;text-align:left;}
+    .refuse_close{width:15px;height:15px;border:1px solid #ddd; text-align:center;float:right;margin:10px;}
+</style>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.datetimepicker.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+
+        <if condition="$auditstatus eq 1">
+        <div class="tab_menu">
+            <ul>
+                <a href="__CONTROLLER__/withdrawals/tmp/wait"><li>　<span class="blue">待审核</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pass"><li>　<span>已通过</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/refuse"><li>　<span>已拒绝</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/finish"><li>　<span>已提现</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pay"><li>　<span>待支付</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/fail"><li>　<span>支付失败</span>　</li></a>
+            </ul>
+        </div>
+        <div class="clear"></div>
+        <hr/>
+        <div>
+            <form action="{:U('/index.php/admin/finance/withdrawals')}" method="get" enctype="multipart/form-data">
+            <label>创建日期：</label> 
+            <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+            <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+            <input type="hidden" name="tmp" value="wait" />
+                手机号:
+                <input type="text" name="mobile" value="{$mobile}" />
+                &nbsp;&nbsp;
+                <input  type="submit" value="查询" />
+            </form>   
+            <div class="list">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>   
+                        <th class="line_l" width="10%"><a href="javascript:;" onclick="checkall()">全选</a>/<a href="javascript:;" onclick="checkno()">全不选</a></th>
+                        <th class="line_l" width="15%">手机号</th>
+                        <th class="line_l" width="15%">支付宝实名</th>
+                        <th class="line_l" width="15%">支付宝</th>
+                        <th class="line_l" width="15%">金额</th>  
+                        <th class="line_l" width="15%">申请时间</th>  
+                        <th class="line_l" width="15%">操作</th>
+                    </tr>
+                    <foreach name="records" item="record">
+                    <tr>
+                        <td><input type="checkbox" name="checked" value="{$record['id']}" class="checkedbox" /></td>
+                        <td>{$record['mobile']}</td>
+                        <td>{$record['account_name']}</td>
+                        <td>{$record['account']}</td>
+                        <td>{$record['fee']}</td>
+                        <td>{$record['paydate']}</td>
+                        <td><a href="javascript:;" onclick="pass({$record['id']})">通过</a>　<a href="javascript:;" onclick="unpass({$record['id']})">拒绝</a></td>
+                    </tr>
+                    </foreach>
+                    <tr>
+                        <td class="line_l" width="10%"><a href="javascript:;" onclick="allpass()">全部通过</a>　<a href="javascript:;" onclick="refuse()">全部拒绝</a></td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">总计:{$recharge_total}</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                    </tr>
+                </table>
+            </div>
+            <div class="Toolbar_inbox">
+                <div class="yema">{$pagehtml}</div>  
+            </div>
+        </div>
+        <elseif condition="$auditstatus eq 2" />
+        <div class="tab_menu">
+            <ul>
+                <a href="__CONTROLLER__/withdrawals/tmp/wait"><li>　<span>待审核</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pass"><li>　<span class="blue">已通过</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/refuse"><li>　<span>已拒绝</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/finish"><li>　<span>已提现</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pay"><li>　<span>待支付</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/fail"><li>　<span>支付失败</span>　</li></a>
+            </ul>
+        </div>
+        <div class="clear"></div>
+        <hr/>
+        <div>
+            <form action="{:U('/index.php/admin/finance/withdrawals')}" method="get" enctype="multipart/form-data">
+            <label>创建日期：</label> 
+            <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+            <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+            <input type="hidden" name="tmp" value="pass" />
+                手机号:
+                <input type="text" name="mobile" value="{$mobile}" />
+                &nbsp;&nbsp;
+                <input  type="submit" value="查询" />
+            </form>   
+            <div class="list">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>   
+                        <th class="line_l" width="10%"><a href="javascript:;" onclick="checkall()">全选</a>/<a href="javascript:;" onclick="checkno()">全不选</a></th>
+                        <th class="line_l" width="5%">序号</th>
+                        <th class="line_l" width="10%">手机号</th>
+                        <th class="line_l" width="10%">支付宝实名</th>
+                        <th class="line_l" width="15%">支付宝</th>
+                        <th class="line_l" width="10%">金额</th>  
+                        <th class="line_l" width="10%">申请时间</th>  
+                        <th class="line_l" width="10%">通过时间</th>  
+                        <th class="line_l" width="10%">操作</th>
+                        <th class="line_l" width="10%">操作人</th>
+                    </tr>
+                    <foreach name="records" item="record">
+                    <tr>
+                        <td><input type="checkbox" name="checked" value="{$record['id']}" class="checkedbox" /></td>
+                        <td>{$record['id']}</td>
+                        <td>{$record['mobile']}</td>
+                        <td>{$record['account_name']}</td>
+                        <td>{$record['account']}</td>
+                        <td>{$record['fee']}</td>
+                        <td>{$record['paydate']}</td>
+                        <td>{$record['operate_time']}</td>
+                        <td><a href="javascript:;" onclick="unpass({$record['id']})">拒绝</a></td>
+                        <td>{$record['user_name']}</td>
+                    </tr>
+                    </foreach>
+                    <tr>
+                        <td class="line_l" width="10%"><a href="javascript:;" onclick="waitpay()">待支付</a></td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">总计:{$recharge_total}</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                    </tr>
+                </table>
+            </div>
+            <div class="Toolbar_inbox">
+                <div class="yema">{$pagehtml}</div>  
+            </div>
+        </div>
+        <elseif condition="$auditstatus eq 3" />
+        <div class="tab_menu">
+            <ul>
+                <a href="__CONTROLLER__/withdrawals/tmp/wait"><li>　<span>待审核</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pass"><li>　<span>已通过</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/refuse"><li>　<span class="blue">已拒绝</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/finish"><li>　<span>已提现</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pay"><li>　<span>待支付</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/fail"><li>　<span>支付失败</span>　</li></a>
+            </ul>
+        </div>
+        <div class="clear"></div>
+        <hr/>
+        <div>
+            <form action="{:U('/index.php/admin/finance/withdrawals')}" method="get" enctype="multipart/form-data">
+            <label>创建日期：</label> 
+            <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+            <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+            <input type="hidden" name="tmp" value="refuse" />
+                手机号:
+                <input type="text" name="mobile" value="{$mobile}" />
+                &nbsp;&nbsp;
+                <input  type="submit" value="查询" />
+            </form>   
+            <div class="list">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <th class="line_l" width="5%">序号</th>
+                        <th class="line_l" width="10%">手机号</th>
+                        <th class="line_l" width="10%">支付宝实名</th>
+                        <th class="line_l" width="10%">支付宝</th>
+                        <th class="line_l" width="10%">金额</th>  
+                        <th class="line_l" width="10%">申请时间</th>  
+                        <th class="line_l" width="10%">拒绝时间</th>  
+                        <th class="line_l" width="15%">拒绝原因</th>  
+                        <th class="line_l" width="10%">操作</th>
+                        <th class="line_l" width="10%">操作人</th>
+                    </tr>
+                    <foreach name="records" item="record">
+                    <tr>
+                        <td>{$record['id']}</td>
+                        <td>{$record['mobile']}</td>
+                        <td>{$record['account_name']}</td>
+                        <td>{$record['account']}</td>
+                        <td>{$record['fee']}</td>
+                        <td>{$record['paydate']}</td>
+                        <td>{$record['operate_time']}</td>
+                        <td>{$record['comment']}</td>
+                        <td>--</td>
+                        <td>{$record['user_name']}</td>
+                    </tr>
+                    </foreach>
+                    <tr>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">总计:{$recharge_total}</td>
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                    </tr>
+                </table>
+            </div>
+            <div class="Toolbar_inbox">
+                <div class="yema">{$pagehtml}</div>  
+            </div>
+        </div>
+        <elseif condition="$paystatus eq S" />
+        <div class="tab_menu">
+            <ul>
+                <a href="__CONTROLLER__/withdrawals/tmp/wait"><li>　<span>待审核</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pass"><li>　<span>已通过</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/refuse"><li>　<span>已拒绝</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/finish"><li>　<span class="blue">已提现</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pay"><li>　<span>待支付</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/fail"><li>　<span>支付失败</span>　</li></a>
+            </ul>
+        </div>
+        <div class="clear"></div>
+        <hr/>
+        <div>
+            <form action="{:U('/index.php/admin/finance/withdrawals')}" method="get" enctype="multipart/form-data">
+            <label>创建日期：</label> 
+            <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+            <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+            <input type="hidden" name="tmp" value="finish" />
+                手机号:
+                <input type="text" name="mobile" value="{$mobile}" />
+                &nbsp;&nbsp;
+                <input  type="submit" value="查询" />
+            </form>   
+            <div class="list">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <th class="line_l" width="5%">序号</th>
+                        <th class="line_l" width="10%">手机号</th>
+                        <th class="line_l" width="15%">支付宝实名</th>
+                        <th class="line_l" width="15%">支付宝</th>
+                        <th class="line_l" width="10%">金额</th>  
+                        <th class="line_l" width="10%">申请时间</th>  
+                        <th class="line_l" width="10%">提现时间</th>  
+                        <th class="line_l" width="15%">操作</th>
+                        <th class="line_l" width="10%">操作人</th>
+                    </tr>
+                    <foreach name="records" item="record">
+                    <tr>
+                        <td>{$record['id']}</td>
+                        <td>{$record['mobile']}</td>
+                        <td>{$record['account_name']}</td>
+                        <td>{$record['account']}</td>
+                        <td>{$record['fee']}</td>
+                        <td>{$record['paydate']}</td>
+                        <td>{$record['operate_time']}</td>
+                        <td>--</td>
+                        <td>{$record['user_name']}</td>
+                    </tr>
+                    </foreach>
+                    <tr>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">总计:{$recharge_total}</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                    </tr>
+                </table>
+            </div>
+            <div class="Toolbar_inbox">
+                <div class="yema">{$pagehtml}</div>  
+            </div>
+        </div>
+        <elseif condition="$paystatus eq O" />
+        <div class="tab_menu">
+            <ul>
+                <a href="__CONTROLLER__/withdrawals/tmp/wait"><li>　<span>待审核</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pass"><li>　<span>已通过</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/refuse"><li>　<span>已拒绝</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/finish"><li>　<span>已提现</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pay"><li>　<span class="blue">待支付</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/fail"><li>　<span>支付失败</span>　</li></a>
+            </ul>
+        </div>
+        <div class="clear"></div>
+        <hr/>
+        <div>
+            <form action="{:U('/index.php/admin/finance/withdrawals')}" method="get" enctype="multipart/form-data">
+            <label>创建日期：</label> 
+            <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+            <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+            <input type="hidden" name="tmp" value="pay" />
+                手机号:
+                <input type="text" name="mobile" value="{$mobile}" />
+                &nbsp;&nbsp;
+                <input  type="submit" value="查询" />
+            </form>   
+            <div class="list">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <th class="line_l" width="5%">序号</th>
+                        <th class="line_l" width="10%">手机号</th>
+                        <th class="line_l" width="15%">支付宝实名</th>
+                        <th class="line_l" width="15%">支付宝</th>
+                        <th class="line_l" width="10%">金额</th>  
+                        <th class="line_l" width="10%">申请时间</th>  
+                        <th class="line_l" width="10%">通过时间</th>  
+                        <th class="line_l" width="15%">操作</th>
+                        <th class="line_l" width="10%">操作人</th>
+                    </tr>
+                    <foreach name="records" item="record">
+                    <tr>
+                        <td>{$record['id']}</td>
+                        <td>{$record['mobile']}</td>
+                        <td>{$record['account_name']}</td>
+                        <td>{$record['account']}</td>
+                        <td>{$record['fee']}</td>
+                        <td>{$record['paydate']}</td>
+                        <td>{$record['operate_time']}</td>
+                        <td><a href="javascript:;" onclick="unpass({$record['id']})">拒绝</a></td>
+                        <td>{$record['user_name']}</td>
+                    </tr>
+                    </foreach>
+                    <tr>
+                        <td class="line_l" width="10%"><a href="javascript:;">支付宝批量付款</a></td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">总计:{$recharge_total}</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                    </tr>
+                </table>
+            </div>
+            <div class="Toolbar_inbox">
+                <div class="yema">{$pagehtml}</div>  
+            </div>
+        </div>
+        <else />
+        <div class="tab_menu">
+            <ul>
+                <a href="__CONTROLLER__/withdrawals/tmp/wait"><li>　<span>待审核</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pass"><li>　<span>已通过</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/refuse"><li>　<span>已拒绝</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/finish"><li>　<span>已提现</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/pay"><li>　<span>待支付</span>　｜</li></a>
+                <a href="__CONTROLLER__/withdrawals/tmp/fail"><li>　<span class="blue">支付失败</span>　</li></a>
+            </ul>
+        </div>
+        <div class="clear"></div>
+        <hr/>
+        <div>
+            <form action="{:U('/index.php/admin/finance/withdrawals')}" method="get" enctype="multipart/form-data">
+            <label>创建日期：</label> 
+            <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+            <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+                <input type="hidden" name="tmp" value="fail" />
+                手机号:
+                <input type="text" name="mobile" value="{$mobile}" />
+                &nbsp;&nbsp;
+                <input  type="submit" value="查询" />
+            </form>   
+            <div class="list">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <th class="line_l" width="5%">序号</th>
+                        <th class="line_l" width="10%">手机号</th>
+                        <th class="line_l" width="15%">支付宝实名</th>
+                        <th class="line_l" width="15%">支付宝</th>
+                        <th class="line_l" width="15%">金额</th>  
+                        <th class="line_l" width="10%">申请时间</th>  
+                        <th class="line_l" width="10%">失败时间</th>  
+                        <th class="line_l" width="10%">操作</th>
+                        <th class="line_l" width="10%">操作人</th>
+                    </tr>
+                    <foreach name="records" item="record">
+                    <tr>
+                        <td>{$record['id']}</td>
+                        <td>{$record['mobile']}</td>
+                        <td>{$record['account_name']}</td>
+                        <td>{$record['account']}</td>
+                        <td>{$record['fee']}</td>
+                        <td>{$record['paydate']}</td>
+                        <td>{$record['operate_time']}</td>
+                        <td>--</td>
+                        <td>{$record['user_name']}</td>
+                    </tr>
+                    </foreach>
+                    <tr>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">&nbsp;</td>
+                        <td class="line_l" width="10%">总计:{$recharge_total}</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                        <td class="line_l" width="10%">&nbsp;</td>  
+                    </tr>
+                </table>
+            </div>
+            <div class="Toolbar_inbox">
+                <div class="yema">{$pagehtml}</div>  
+            </div>
+        </div>
+        </if>
+        <div id="tab_refuse">
+                <span class="refuse_reason">拒绝理由</span><div class="refuse_close">X</div>
+            <div style="clear:both;"></div>
+            <div id="refuse_content" style="margin:0 auto;"></div>
+        </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.datetimepicker.js" ></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#starttime,#endtime').datetimepicker({
+        lang:'ch',
+        timepicker:true,
+        format:'Y-m-d H:i',
+        formatDate:'Y-m-d H:i'
+    });
+});
+    function checkall(){
+        $("input[type=checkbox]").attr("checked",true);
+    }
+    function checkno(){
+        $("input[type=checkbox]").attr("checked",false);
+    }
+    function pass(rid){
+        //alert(rid);
+        $.ajax({
+            url:"__CONTROLLER__/pass",
+            data:{rid:rid},
+            dataType:"json",
+            type:"POST",
+            success:function(data){
+                if(data.err == 0){
+                    alert('审核通过！');
+                    window.location.reload();
+                }else{
+                    alert('审核不通过！');
+                }
+            }
+        });
+    }
+
+    function unpass(rid){
+            var tab_refuse = '';
+            tab_refuse += '<input type="hidden" name="id" value="'+rid+'" />';
+            tab_refuse += '<textarea rows="5" cols="50" name="reason"></textarea>';
+            tab_refuse += '<input type="submit" value="提交" class="refuse_sub" />';
+            $("#refuse_content").html(tab_refuse);
+            $("#tab_refuse").css("display","block");
+    }
+
+    $(".refuse_close").click(function(event){
+            var ent = event || window.event;
+            $("#tab_refuse").css("display","none");
+            ent.cancelBubble = true;
+    });
+
+    $(".refuse_sub").live("click",function(){
+            var reason = $(this).prev().val();
+            var rid = $(this).prev().prev().val();
+            $.ajax({
+                url:"__CONTROLLER__/unpass",
+                dataType:"json",
+                type:"POST",
+                data:{rid:rid,reason:reason},
+                success:function(data){
+                    if(data.err == 0){
+                        alert("拒绝成功");
+                        $("#tab_refuse").css("display","none");
+                        window.location.reload();
+                    }else{
+                        alert("拒绝失败");
+                    }
+                }
+            });
+        });
+
+    function allpass(){
+        var id = '';
+        $("input:checkbox[name=checked]:checked").each(function(){
+            id += $(this).val()+",";
+        });
+        if(id == ''){
+            alert('请先选择！');
+        }else{
+            $.ajax({
+                url:"__CONTROLLER__/pass",
+                dataType:"json",
+                data:{rid:id},
+                type:"POST",
+                success:function(data){
+                    if(data.err == 0){
+                        alert('审核通过！');
+                        window.location.reload();
+                    }else{
+                        alert('审核不通过！');
+                    }
+                }
+            });
+        }
+    }
+
+    function refuse(){
+            var id = '';
+            $("input:checkbox[name=checked]:checked").each(function(){
+                id += $(this).val()+",";
+            });
+            if(id == ''){
+                alert('请先选择！');
+            }else{
+                $.ajax({
+                    url:"__CONTROLLER__/unpass",
+                    dataType:"json",
+                    data:{rid:id},
+                    type:"POST",
+                    success:function(data){
+                        if(data.err == 0){
+                            alert('拒绝成功！');
+                            window.location.reload();
+                        }else{
+                            alert('拒绝失败！');
+                        }
+                    }
+                });
+            }
+    }
+
+    function waitpay(){
+         var id = '';
+        $("input:checkbox[name=checked]:checked").each(function(){
+            id += $(this).val()+",";
+        });
+        if(id == ''){
+            alert('请先选择！');
+        }else{
+            $.ajax({
+                url:"__CONTROLLER__/waitpay",
+                dataType:"json",
+                data:{rid:id},
+                type:"POST",
+                success:function(data){
+                    if(data.err == 0){
+                        alert('转变待支付');
+                        window.location.reload();
+                    }else{
+                        alert('转变失败');
+                    }
+                }
+            });
+        }
+    }
+    
+</script>
+<include file="../Public/_footer" />

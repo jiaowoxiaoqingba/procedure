@@ -1,0 +1,85 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.datetimepicker.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery-ui-1.7.2.custom.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/navmenu.css" > 
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+
+    <include file="_menu" />
+    <div class="clear"></div>
+    <hr/>
+    <div>
+        <div style="height:100px;line-height:30px;">
+            <form action="{:U('/index.php/admin/blog/waitaudit')}" method="post" enctype="multipart/form-data">
+            <label>手机号/帐号(自媒体主):</label>
+            <input type="text" name="username" value="{$username}" placeholder="输入手机号或注册帐号"/>
+            <br/>
+            <label>创建日期:</label>
+            <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+            <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+            &nbsp;&nbsp; 
+            <label>分类:</label>
+                <select name="mediaclass">
+                    <option value=''>-选择分类-</option>
+                        <foreach name="classtypes" item="vo" >
+                            <option value='{$key}'  <if condition="$mediaclass eq $key ">selected="selected"</if>>{$vo}</option>
+                        </foreach>
+                </select>
+            <label>微博昵称:</label>
+                <input type="text" name="nick" value="{$nick}" placeholder="输入微博昵称"/>
+            <br/>
+            <label>粉&nbsp;&nbsp;丝&nbsp;&nbsp;数:</label>
+                <input class="textbox" type="number" value="{$follower_min}" name="follower_min" placeholder="最小粉丝数"  > -
+                <input class="textbox" type="number" value="{$follower_max}" name="follower_max" placeholder="最大粉丝数" >
+                <input type="hidden" name="status" value="editaudit" />
+                &nbsp;&nbsp;&nbsp;&nbsp; 
+                <input  type="submit" value="查询" />
+            </form>
+          </div>   
+        <div class="list">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>   
+                    <th class="line_l" width="10%">微博昵称</th>
+                    <th class="line_l" width="10%">粉丝量</th>
+                    <th class="line_l" width="10%">分类</th>
+                    <th class="line_l" width="10%">原发价格(自)</th>
+                    <th class="line_l" width="10%">转发价格(自)</th>
+                    <th class="line_l" width="10%">原发价格(广)</th>
+                    <th class="line_l" width="10%">转发价格(广)</th>
+                    <th class="line_l" width="15%">创建时间</th>  
+                    <th class="line_l" width="15%">操作</th>
+                </tr>
+                <foreach name="data" item="vo">
+                <tr id="list_{$vo['cid']}">
+                    <td><a href="javascript:;" onclick="bloginfo({$vo['cid']})">{$vo['nick']}</a></td>
+                    <td>{$vo['followers_count']}</td>
+                    <td>{$vo['classids']}</td>
+                    <td><if condition="$vo['postprice2']"><span style="color:red;">{$vo['postprice2']}</span>/</if>{$vo['postprice']}</td>
+                    <td><if condition="$vo['forwardprice2']"><span style="color:red;">{$vo['forwardprice2']}</span>/</if>{$vo['forwardprice']}</td>
+                    <td>{$vo['postprice_adver2']}/<input type="text" name="postprice_adver" value="{$vo['postprice_adver']}" style="width:50px;" onkeyup="value=value.replace(/[^\d.]/g,'')" /></td>
+                    <td>{$vo['forwardprice_adver2']}/<input type="text" name="forwardprice_adver" value="{$vo['forwardprice_adver']}" style="width:50px;" onkeyup="value=value.replace(/[^\d.]/g,'')" /></td>
+                    <td>{$vo['date']}</td>
+                    <td><a href="javascript:;" onclick="verify_user(1,{$vo['cid']})">通过</a>　<a href="javascript:;" onclick="reject(0,{$vo['cid']});">拒绝</a></td>
+                </tr>
+                </foreach>
+            </table>
+        </div>
+        <div class="Toolbar_inbox">
+            <div class="yema">{$pagehtml}</div>  
+        </div>
+    </div>
+    <div id="tab_refuse">
+            <span class="refuse_reason">拒绝理由</span><div class="refuse_close">X</div>
+        <div style="clear:both;"></div>
+        <div id="refuse_content" style="margin:0 auto;"></div>
+    </div>
+</div>
+<div id="layer"></div>
+<div id="layer_reject"></div>
+<div class="windows_box win_510" id="view_task" ></div>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-ui-1.7.2.custom.min.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.datetimepicker.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/admin/js/blog.js" ></script>
+<include file="Public/_footer" />

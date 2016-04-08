@@ -1,0 +1,94 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.datetimepicker.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery-ui-1.7.2.custom.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>   
+    <form action="{:U('/index.php/admin/blog/punishlist')}" method="post" enctype="multipart/form-data">
+        <label>记录日期:</label> 
+        <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+        <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+        <label>用户登录名:</label>
+        <input type="text" name="username" value="{$username}" />
+        &nbsp;&nbsp;
+        <label>自媒体主用户名:</label>
+        <input type="text" name="name" value="{$name}" />
+        &nbsp;&nbsp;
+        <input  type="submit" value="查询" />
+    </form> 
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="5%">序号</th>
+                <th class="line_l" width="10%">用户登录名</th>
+                <th class="line_l" width="10%">自媒体主用户名</th>
+                <th class="line_l" width="7%">平台类型</th>
+                <th class="line_l" width="8%">派单数</th>
+                <th class="line_l" width="8%">接单数</th>
+                <th class="line_l" width="8%">违约数</th>  
+                <th class="line_l" width="8%">拒单数</th>  
+                <th class="line_l" width="8%">流单数</th>  
+                <th class="line_l" width="14%">记录时间</th>  
+                <th class="line_l" width="14%">操作</th>  
+            </tr>
+            <foreach name="punishs" item="punish">
+        	<tr>
+	       <td>{$punish['id']}</td>
+	       <td>{$punish['username']}</td>
+                    <td>{$punish['name']}</td>
+	       <td>{$plattypelist[$punish['plattype']]}</td>
+	       <td>{$punish['cliquenumber']}</td>
+	       <td>{$punish['acceptnumber']}</td>
+	       <td>{$punish['defaultnumber']}</td>
+	       <td>{$punish['refusenumber']}</td>
+                    <td>{$punish['flownumber']}</td>
+                    <td>{$punish['updatetime']}</td>
+            		<td>
+                        <if condition="$punish['platstatus'] eq 0">
+                             <a href="javascript:;" style="color:#ddd;" >启用</a>　|　<a href="javascript:;" onclick="javascript:enable({$punish['id']},{$punish['mediaid']},1)">禁用</a>
+                        <else />
+                             <a href="javascript:;" onclick="javascript:enable({$punish['id']},{$punish['mediaid']},0)" >启用</a>　|　<a href="javascript:;" style="color:#ddd;" >禁用</a>
+                        </if>
+                    </td>
+            	</tr>
+            </foreach>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#starttime,#endtime').datetimepicker({
+            lang:'ch',
+            timepicker:true,
+            format:'Y-m-d H:i',
+            formatDate:'Y-m-d H:i'
+        });
+        $(".close_btn").click(function(){
+            $("#audit_refuse").hide();
+        });
+    });
+    
+    function enable(pid,mediaid,status){
+        $.ajax({
+            url:"__CONTROLLER__/punishinfo",
+            data:{pid:pid,mediaid:mediaid,status:status},
+            dataType:"json",
+            type:"POST",
+            success:function(data){
+                if(data.err == 0){
+                    alert("自媒体主状态修改成功");
+                    window.location.reload();
+                }else{
+                    alert("自媒体主状态修改失败");
+                }
+            }
+        });
+    }
+</script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.datetimepicker.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-ui-1.7.2.custom.min.js" ></script>
+<include file="Public/_footer" />

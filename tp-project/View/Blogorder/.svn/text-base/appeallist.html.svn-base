@@ -1,0 +1,231 @@
+<include file="Public/_header" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/common.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/admin/css/page.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.datetimepicker.css" >
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery-ui-1.7.2.custom.css" >
+<div class="so_main">  
+    <div class="page_tit">{$funcdesc}</div>
+    <div style="height:70px;line-height:30px;">
+    <form action="{:U('/index.php/admin/blogorder/appeallist')}" method="post" enctype="multipart/form-data">
+        <label>创建日期：</label> 
+        <input class="textbox" type="text" value="{$starttime}" name="starttime" id="starttime" placeholder="选择开始日期" readonly > -
+        <input class="textbox" type="text" value="{$endtime}" name="endtime" id="endtime" placeholder="选择结束日期" readonly>
+        <label>任务创建人昵称：</label>
+        <input type="text"  maxlength="200" name="user_name" value="{$user_name}" placeholder="任务创建人昵称"/>
+        <label>平台订单ID：</label>
+        <input type="text" name="tid" value="{$tid}"  placeholder="平台订单ID"/>
+        <br/>
+        <label>任务名称：</lable>
+        <input type="text" id="content" maxlength="200" name="content" value="{$content}" placeholder="任务名称"/>
+        <input id="baocun-btn" type="submit" value="搜索">
+    </form>
+    </div>   
+    <div class="list">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>   
+                <th class="line_l" width="10%">订单ID</th>
+                <th class="line_l" width="10%">接单人</th>
+                <th class="line_l" width="10%">任务名称</th> 
+                <th class="line_l" width="10%">任务创建人</th>
+                <th class="line_l" width="10%">创建时间</th>
+                <th class="line_l" width="10%">开始时间</th>  
+                <th class="line_l" width="10%">订单价格</th>  
+                <th class="line_l" width="10%">订单状态</th>
+                <th class="line_l" width="20%">操作</th>
+            </tr>
+            <foreach name="orders" item="order">
+            <tr id="tr{$order['id']}">
+                <td>{$order['id']}</td>
+                <td><a href="javascript:;" onclick="mediauser_info({$order['payeeid']});">{$order['user_name']}</a></td>
+                <td><a href="javascript:;" onclick="taskinfo({$order['taskid']},{$order['id']});">{$order['taskname']}</a></td>
+                <td>{$order['username']}</td>
+                <td>{$order['createtime']}</td>
+                <td>{$order['starttime']}</td>
+                <td>{$order['realadprice']}</td>
+                <td>{$statuslist[$order['status']]}</td>
+                <td><a href="javascript:;" onclick="appealed({$order['id']},0)">申诉</a>　　
+                        <if condition="$order['appealInfoSign'] eq 1">
+                        <a href="javascript:;" class="blue2 taskName" vid="{$order['id']}" onclick="info(this)" att="0">申诉列表</a>
+                        </if>
+                </td>
+            </tr>
+            </foreach>
+            <tr>
+                 <td class="line_l" width="10%">&nbsp;</td>
+                 <td class="line_l" width="10%">&nbsp;</td>
+                 <td class="line_l" width="10%">&nbsp;</td>
+                 <td class="line_l" width="10%">&nbsp;</td>  
+                 <td class="line_l" width="10%">&nbsp;</td>  
+                 <td class="line_l" width="10%">订单总计:{$num_total}</td>  
+                 <td class="line_l" width="10%">总计:{$balance_total}</td>  
+                 <td class="line_l" width="10%">&nbsp;</td>  
+                 <td class="line_l" width="20%">&nbsp;</td>  
+            </tr>
+        </table>
+    </div>
+    <div class="Toolbar_inbox">
+        <div class="yema">{$pagehtml}</div>  
+    </div>
+</div>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-ui-1.7.2.custom.min.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.datetimepicker.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/admin/js/blogappeal.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/admin/js/blogtaskorders.js" ></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#starttime,#endtime').datetimepicker({
+        lang:'ch',
+        timepicker:true,
+        format:'Y-m-d H:i',
+        formatDate:'Y-m-d H:i'
+    });
+});
+function rejectOrderAppeal(orderId){
+    //updateTaskStatus(taskId,5);
+    var rejectDesc = $("#rejectOrderDesc").val();
+    $.ajax({
+        type: "POST",
+        url: "/admin/blogorder/appeal_reply",
+        dataType : "json",// 指定返回类型 
+        data: {
+            id:orderId,rejectDesc:rejectDesc 
+        },// 传递到后台的参数
+        success: function(data){
+            if(data.err == 0){
+                alert(data.msg);
+                $("#audit_refuse_appeal").hide();
+                window.location.reload();
+            }else{
+                alert(data.msg);
+            }
+        }
+    });
+}
+
+//弹出任务拒绝浮层
+function appeal_reply(orderId){
+    var _js = "javascript:rejectOrderAppeal("+orderId+");"
+    $("#audit_refuse_app").attr("href",_js);
+    $("#audit_refuse_appeal").show();
+    
+    $(".close_btn").click(function(){
+        $('#audit_refuse_appeal').hide();
+    });
+}
+
+function rejectOrder(orderId,appealsign){
+    //updateTaskStatus(taskId,5);
+    var appeal = $("#appeal_selected").val();
+    var rejectDesc = $("#rejectDesc").val();
+    var adappealprice = $("#adappealprice").val();
+    var mappealprice = $("#mappealprice").val();
+    //alert(appeal);
+    $.ajax({
+        type: "POST",
+        url: "/admin/blogorder/appealed_reason",
+        dataType : "json",// 指定返回类型 
+        data: {
+            id:orderId,appealsign:appealsign,rejectDesc:rejectDesc,adappealprice:adappealprice,mappealprice:mappealprice,appeal:appeal
+        },// 传递到后台的参数
+        success: function(data){
+            if(data.err == 0){
+                alert(data.msg);
+                $("#audit_refuse").hide();
+                window.location.reload();
+            }else{
+                alert(data.msg);
+            }
+        }
+    });
+}
+
+//弹出任务申诉浮层
+function appealed(orderId,appealsign){
+    var _js = "javascript:rejectOrder("+orderId+","+appealsign+");"
+    $("#audit_refuse_a").attr("href",_js);
+    $("#audit_refuse").show();
+    
+    $(".close_btn").click(function(){
+        $('#audit_refuse').hide();
+    });
+}
+
+//申诉状态的改变
+$("#appeal_selected").live("change",function(){
+    var selected = $(this).val();
+    if(selected == 1){
+        $("#appeal_reason").css("display","block");
+        $("#appeal_price").css("display","none");
+    }else{
+        $("#appeal_reason").css("display","none");
+        $("#appeal_price").css("display","block");
+    }
+});
+
+//下拉项的出现
+function info(obj){
+    var att=$(obj).attr("att");
+    var id=$(obj).attr("vid");
+    if(att==0){     
+        $(".detail").slideUp("fast");
+        $(".detail").remove();
+        $(obj).parents("tr").siblings("tr").find(".taskName").attr("att","0");
+        $(obj).parents("tr").siblings("tr").find(".taskName").removeClass("se");
+        $(obj).attr("class","blue2 taskName se");
+        $.post("{:U('/admin/blogorder/infoorder')}",{orderid:id}, function(ret){
+            $("#tr"+id).after("<tr class='detail' id='aaa"+id+"'>"+ret+"</tr>"); 
+            $("#aaa"+id).slideDown("fast");
+       });
+       $(obj).attr("att","1");
+    }
+    if(att==1){
+        $("#aaa"+id).slideDown("slow");
+        $("#aaa"+id).remove();
+        $(obj).attr("class","blue2 taskName");
+        $(obj).attr("att","0");
+    }
+}
+
+</script>
+<div class="windows_box win_510" id="view_task" ></div>
+<!--回馈-->
+<div class="windows_box win_510" id="audit_refuse_appeal">
+    <div class="win_title">
+        <span class="win_name">回复内容</span>
+      <a href="javascript:void(0)" rel="777" class="close_btn"></a>
+    </div>
+    <div class="win_con">
+        <div class="textarea">
+            <textarea id="rejectOrderDesc" name="rejectOrderDesc" onfocus="$(this).html('')">请帮助企业提出修改建议，简明扼要</textarea>
+        </div>
+        <div class="btn_area"><a id="audit_refuse_app" href="javascript:rejectOrderAppeal();" class="win_btn"><span>提交</span></a></div>
+    </div>
+</div>
+<!--申诉-->
+<div class="windows_box win_510" id="audit_refuse">
+    <div class="win_title">
+        <span class="win_name">申诉</span>
+      <a href="javascript:void(0)" rel="777" class="close_btn"></a>
+    </div>
+    <div class="win_con" style="margin:10px;">
+    <lable>申诉状态：</lable>
+    <select name="appeal" id="appeal_selected">
+        <option value="1">申诉中</option>
+        <option value="2">申诉完成</option>
+    </select>
+    </div>
+    <div class="win_con" id="appeal_reason" style="display:block;">
+        <div class="textarea">
+            <textarea id="rejectDesc" name="rejectDesc" onfocus="$(this).html('')">请填写申诉理由，简明扼要</textarea>
+        </div>
+    </div>
+    <div class="win_con" id="appeal_price" style="display:none;">
+        <lable>广告主结算价格  :</lable>
+        <input type="text" name="adappealprice" id="adappealprice" />　元
+        <br/><br/>
+        <lable>自媒体主结算价格:</lable>
+        <input type="text" name="mappealprice" id="mappealprice" />　元
+    </div>
+    <div class="btn_area" style="margin:10px;"><a id="audit_refuse_a" href="javascript:rejectOrder();" class="win_btn"><span>提交</span></a></div>
+</div>
+<include file="Public/_footer" />
