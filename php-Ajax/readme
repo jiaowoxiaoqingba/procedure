@@ -5,6 +5,3 @@ php 简单消息推送(含源码)
 今天刚好周六，昨天有人在群里问如何实习php的即时通讯。我也搜了搜资料，打算自己实现一遍php消息推送中的-ajax长轮询的。我觉得对php即时通讯的介绍写得比较好的是：
 http://www.cnblogs.com/hnrainll/archive/2013/05/07/3064874.html
 可以参考一下，其他我就不多说了，参考链接，优于用于演示，就没有操作数据库中的东西了。
-
-效果
-![ABC](http://upload-images.jianshu.io/upload_images/301894-c8cd1219563ab8b1?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240) 
